@@ -1,0 +1,7 @@
+{
+  "name": "appWebMovel",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

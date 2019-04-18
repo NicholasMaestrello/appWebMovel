@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar>
+  <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Residencias</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h3>Residencias para Você</h3>
+
+  <ion-list>
+    <ion-card ion-item *ngFor="let item of items">
+      <ion-card-header>
+      {{item.title}}
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="item-note" item-end>
+          {{item.note}}
+        </div>
+        <button (click)="itemTapped($event, item)">Informações</button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
