@@ -29,6 +29,8 @@ import {HttpClientProvider} from '../providers/http-client/http-client';
 // components
 import {MyApp} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
+import {AgmCoreModule} from "@agm/core";
+import {mapsConfig} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -47,6 +49,7 @@ import {HttpClientModule} from '@angular/common/http';
     ErrorPage
   ],
   imports: [
+    AgmCoreModule.forRoot(mapsConfig),
     BrowserModule,
     IonicModule.forRoot(MyApp),
     HttpClientModule,

@@ -8,5 +8,18 @@
 </ion-header>
 
 <ion-content padding>
-  <div #map id="map"></div>
+  <agm-map [zoom]="14" [latitude]="-21.763409" [longitude]="-43.349034" (mapClick)="onChoseLocation($event)">
+    <agm-marker
+      *ngFor="let imovel of imoveis$ | async"
+      [latitude]="getLat(imovel)"
+      [longitude]="getLgn(imovel)"
+      [title]="'Descricao'"
+      (markerClick)="showDetalhe(imovel)">
+    </agm-marker>
+    <agm-marker
+      [latitude]="-21.763409"
+      [longitude]="-43.349034"
+      [title]="'Você está aqui!'">
+    </agm-marker>
+  </agm-map>
 </ion-content>

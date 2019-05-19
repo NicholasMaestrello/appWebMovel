@@ -6,6 +6,7 @@ import {LoginDto, LoginRes} from "../../model/login.dto";
 import {ResidenciaDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
 import {of} from "rxjs/observable/of";
 import {Storage} from "@ionic/storage";
+import {mapsConfig} from "../../environments/environment";
 
 @Injectable()
 export class HttpClientProvider {
@@ -13,7 +14,7 @@ export class HttpClientProvider {
   private urlEstados = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
   private urlMunicipios = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
   private urlViaCep = 'https://viacep.com.br/ws';
-  private chaveGoogle = '';
+  private chaveGoogle = mapsConfig;
 
   constructor(public http: HttpClient,
               private storage: Storage,) {
