@@ -1,14 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
-import { Nav, Platform } from 'ionic-angular';
-import { ListPage } from '../list/list';
-import { MapaPage } from '../mapa/mapa';
-import { LoginPage } from '../login/login';
-import { TabsPage } from '../tabs/tabs';
-import { ResidenciaUsuarioListPage } from '../residencia-usuario-list/residencia-usuario-list';
-import { ContaPage } from '../conta/conta';
-import { AboutPage } from '../about/about';
+import {Component, ViewChild} from '@angular/core';
+import {SplashScreen} from '@ionic-native/splash-screen';
+import {StatusBar} from '@ionic-native/status-bar';
+import {Nav, Platform} from 'ionic-angular';
+import {LoginPage} from '../login/login';
+import {TabsPage} from '../tabs/tabs';
+import {ResidenciaUsuarioListPage} from '../residencia-usuario-list/residencia-usuario-list';
+import {AboutPage} from '../about/about';
+import {CadastroUsuarioPage} from "../cadastro-usuario/cadastro-usuario";
 
 @Component({
   selector: 'page-home',
@@ -21,15 +19,16 @@ export class HomePage {
 
   pages: Array<{ title: string, component: any }>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform,
+              public statusBar: StatusBar,
+              public splashScreen: SplashScreen) {
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Procurar Imovel', component: TabsPage },
-      { title: 'Meus Imoveis', component: ResidenciaUsuarioListPage },
-      { title: 'Minha Conta', component: ContaPage },
-      { title: 'Sobre', component: AboutPage }
+      {title: 'Procurar Imovel', component: TabsPage},
+      {title: 'Meus Imoveis', component: ResidenciaUsuarioListPage},
+      {title: 'Minha Conta', component: CadastroUsuarioPage},
+      {title: 'Sobre', component: AboutPage}
     ];
-
   }
 
   openPage(page) {

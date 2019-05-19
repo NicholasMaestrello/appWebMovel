@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ResidenciaDetalhePage } from '../residencia-detalhe/residencia-detalhe';
+import {HttpClientProvider} from "../../providers/http-client/http-client";
+import {ResidenciaDTO} from "../../model/residencias";
 
 /**
  * Generated class for the ResidenciaListPage page.
@@ -14,34 +16,38 @@ import { ResidenciaDetalhePage } from '../residencia-detalhe/residencia-detalhe'
   templateUrl: 'residencia-list.html',
 })
 export class ResidenciaListPage {
-  
-  icons: string[];
-  items: Array<{title: string, note: string, icon: string}>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    // Let's populate this page with some filler content for funzies
-    this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-    'american-football', 'boat', 'bluetooth', 'build'];
+  residencias: ResidenciaDTO[];
 
-    this.items = [];
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public httpClient: HttpClientProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ResidenciaListPage');
+    this.buscarImoveis();
   }
 
-  itemTapped(event, item) {
-    // That's right, we're pushing to ourselves!
+  itemTapped(id: number) {
+    // navegando para pagina de detalhes da residencia
     this.navCtrl.push(ResidenciaDetalhePage, {
-      item: item
+      item: id
     });
+  }
+
+  buscarImoveis() {
+    this.httpClient.getImoveisFiltrados(null).subscribe(
+      res => {
+        this.setarImoveis(res);
+      },
+      err => {
+        console.log(err)
+      }
+    )
+  }
+
+  setarImoveis(residencias: ResidenciaDTO[]) {
+    this.residencias = residencias;
   }
 
 }

@@ -1,47 +1,55 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { ResidenciaUsuarioFormPage } from '../residencia-usuario-form/residencia-usuario-form';
-
-/**
- * Generated class for the ResidenciaUsuarioListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {Component, OnInit} from '@angular/core';
+import {ModalController, NavController, NavParams} from 'ionic-angular';
+import {ResidenciaUsuarioFormPage} from '../residencia-usuario-form/residencia-usuario-form';
+import {Storage} from "@ionic/storage";
+import {ResidenciaUsuarioDTO} from "../../model/residencias";
+import {ErrorPage} from "../error/error";
+import {HttpClientProvider} from "../../providers/http-client/http-client";
 
 @Component({
   selector: 'page-residencia-usuario-list',
   templateUrl: 'residencia-usuario-list.html',
 })
-export class ResidenciaUsuarioListPage {
+export class ResidenciaUsuarioListPage implements OnInit{
   icons: string[];
-  items: Array<{ title: string, note: string, icon: string }>;
+  residencias: ResidenciaUsuarioDTO[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-
-    // Let's populate this page with some filler content for funzies
-    this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-      'american-football', 'boat', 'bluetooth', 'build'];
-
-    this.items = [];
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private storage: Storage,
+              private httpClient: HttpClientProvider,
+              public modalCtrl: ModalController) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ResidenciaUsuarioListPage');
+  ngOnInit(): void {
+    this.getResidenciasUsuario();
   }
 
-  itemTapped(event, item) {
-    // That's right, we're pushing to ourselves!
-    this.navCtrl.push(ResidenciaUsuarioFormPage, {
-      item: item
+  getResidenciasUsuario() {
+    this.storage.get('userName').then((val: string) => {
+      this.httpClient.getImoveisUsuario(val).subscribe(
+        res => this.residencias = res,
+        err => {
+          console.log(err);
+          const modal = this.modalCtrl.create(ErrorPage);
+          modal.present();
+        }
+      )
     });
   }
 
+  editar(event, imovel: ResidenciaUsuarioDTO) {
+    console.log(imovel);
+    this.navCtrl.push(ResidenciaUsuarioFormPage, {
+      item: imovel.id
+    });
+  }
+
+  novo() {
+    this.navCtrl.push(ResidenciaUsuarioFormPage);
+  }
+
+  excluir(event, imovel: ResidenciaUsuarioDTO) {
+    // TODO chamar api de delete
+  }
 }

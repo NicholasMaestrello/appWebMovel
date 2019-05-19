@@ -11,16 +11,16 @@
   <h3>Residencias para Você</h3>
 
   <ion-list>
-    <ion-card ion-item *ngFor="let item of items">
+    <ion-card ion-item *ngFor="let item of residencias">
       <ion-card-header>
-      {{item.title}}
+      {{item.kind}}
       </ion-card-header>
 
       <ion-card-content>
         <div class="item-note" item-end>
-          {{item.note}}
+          {{item.area}}
         </div>
-        <button (click)="itemTapped($event, item)">Informações</button>
+        <button (click)="itemTapped(item.id)">Informações</button>
       </ion-card-content>
     </ion-card>
   </ion-list>

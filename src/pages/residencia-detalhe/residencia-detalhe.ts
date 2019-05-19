@@ -1,12 +1,7 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the ResidenciaDetalhePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {HttpClientProvider} from "../../providers/http-client/http-client";
+import {ResidenciaDTO} from "../../model/residencias";
 
 @Component({
   selector: 'page-residencia-detalhe',
@@ -14,11 +9,22 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ResidenciaDetalhePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  residencia: ResidenciaDTO;
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public httpClient: HttpClientProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ResidenciaDetalhePage');
+    this.getResidenciaDetalhe(this.navParams.data.item);
+  }
+
+  getResidenciaDetalhe(idResidencia: number) {
+    this.httpClient.getImoveisDetalhe(idResidencia).subscribe(
+      res => this.residencia = res,
+      err => console.log(err)
+    );
   }
 
 }

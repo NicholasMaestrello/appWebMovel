@@ -1,15 +1,68 @@
-<!--
-  Generated template for the ResidenciaUsuarioFormPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
   <ion-navbar>
-    <ion-title>residenciaUsuarioForm</ion-title>
+    <ion-title>Seu Imovel</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h3>Cadastro, edição de residencias</h3>
+  <form [formGroup]="residenciaForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label>Kind ?</ion-label>
+        <ion-input type="text" formControlName="kind" placeholder="Kind ?"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Venda ?</ion-label>
+        <ion-checkbox formControlName="for_sale"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label>Preço para venda</ion-label>
+        <ion-input type="text" formControlName="sell_price"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Aluguel ?</ion-label>
+        <ion-checkbox formControlName="for_rent"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label>Preço para aluguel</ion-label>
+        <ion-input type="text" formControlName="rent_price"></ion-input>
+      </ion-item>
+      <div formGroupName="address">
+        <ion-item>
+          <ion-label>CEP</ion-label>
+          <ion-input type="text" formControlName="zipcode" placeholder="CEP"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Estado</ion-label>
+          <ion-select formControlName="state">
+            <ion-option *ngFor="let estado of estados$ | async" [value]="estado.sigla">{{estado.sigla}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cidade</ion-label>
+          <ion-input formControlName="city" type="text" placeholder="Cidade"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Bairro</ion-label>
+          <ion-input formControlName="neighborhood" type="text" placeholder="Bairro"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Rua</ion-label>
+          <ion-input formControlName="street_name" type="text" placeholder="Rua"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Numero</ion-label>
+          <ion-input formControlName="street_number" type="number" placeholder="Numero"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Complemento / Apartamento</ion-label>
+          <ion-input formControlName="apartment" type="text" placeholder="Complemento"></ion-input>
+        </ion-item>
+      </div>
+    </ion-list>
+    <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!residenciaForm.valid">
+      Cadastrar
+    </button>
+    <span>{{residenciaForm.status}}</span>
+  </form>
 </ion-content>
