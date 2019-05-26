@@ -2,6 +2,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {ErrorHandler, NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 // ionic
 import {IonicStorageModule} from '@ionic/storage';
 // ionic-anguar
@@ -18,25 +19,25 @@ import {LoginPage} from '../pages/login/login';
 import {TabsPage} from '../pages/tabs/tabs';
 import {ResidenciaListPage} from '../pages/residencia-list/residencia-list';
 import {HomePage} from '../pages/home/home';
-import {ListPage} from '../pages/list/list';
 import {ResidenciaDetalhePage} from '../pages/residencia-detalhe/residencia-detalhe';
 import {ResidenciaUsuarioListPage} from '../pages/residencia-usuario-list/residencia-usuario-list';
 import {ResidenciaUsuarioFormPage} from '../pages/residencia-usuario-form/residencia-usuario-form';
 import {AboutPage} from '../pages/about/about';
 import {ErrorPage} from '../pages/error/error';
+import {FilterPage} from "../pages/filter/filter";
 // Providers
 import {HttpClientProvider} from '../providers/http-client/http-client';
 // components
 import {MyApp} from './app.component';
-import {HttpClientModule} from '@angular/common/http';
 import {AgmCoreModule} from "@agm/core";
+import {LoadingProvider} from '../providers/loading/loading';
+// enviroment
 import {mapsConfig} from "../environments/environment";
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
     MapaPage,
     CadastroUsuarioPage,
     LoginPage,
@@ -46,7 +47,8 @@ import {mapsConfig} from "../environments/environment";
     ResidenciaUsuarioListPage,
     ResidenciaUsuarioFormPage,
     AboutPage,
-    ErrorPage
+    ErrorPage,
+    FilterPage
   ],
   imports: [
     AgmCoreModule.forRoot(mapsConfig),
@@ -63,7 +65,6 @@ import {mapsConfig} from "../environments/environment";
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
     MapaPage,
     CadastroUsuarioPage,
     LoginPage,
@@ -73,7 +74,8 @@ import {mapsConfig} from "../environments/environment";
     ResidenciaUsuarioListPage,
     ResidenciaUsuarioFormPage,
     AboutPage,
-    ErrorPage
+    ErrorPage,
+    FilterPage
   ],
   providers: [
     StatusBar,
@@ -81,7 +83,8 @@ import {mapsConfig} from "../environments/environment";
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Geolocation,
     NativeGeocoder,
-    HttpClientProvider
+    HttpClientProvider,
+    LoadingProvider
   ]
 })
 export class AppModule {

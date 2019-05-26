@@ -65,9 +65,10 @@ export class CadastroUsuarioPage implements OnInit {
       neighborhood: [null],
       street_name: [null],
       street_number: [null],
-      apartment: [null]
+      apartment: [null],
+      telephone: [null],
+      cell_phone: [null]
     });
-    console.log('aqui')
   }
 
   createFormSubscribe() {
@@ -113,7 +114,7 @@ export class CadastroUsuarioPage implements OnInit {
   }
 
   populateUserForm(user: User) {
-    this.usuarioForm.setValue(
+    this.usuarioForm.patchValue(
       {
         name: user.name,
         username: user.username,
@@ -130,7 +131,9 @@ export class CadastroUsuarioPage implements OnInit {
         street_number: user.street_number,
         apartment: user.apartment,
         neighborhood: user.neighborhood,
-        zipcode: user.zipcode
+        zipcode: user.zipcode,
+        telephone: user.telephone,
+        cell_phone: user.cell_phone
       }
     )
   }
@@ -153,6 +156,8 @@ export class CadastroUsuarioPage implements OnInit {
         street_name: formValue.street_name,
         street_number: formValue.street_number,
         apartment: formValue.apartment
+        // telephone: formValue.telephone,
+        // cell_phone: formValue.cell_phone
       }
     }
     return user;

@@ -38,7 +38,7 @@ export class ResidenciaUsuarioListPage implements OnInit{
     });
   }
 
-  editar(event, imovel: ResidenciaUsuarioDTO) {
+  editar(imovel: ResidenciaUsuarioDTO) {
     console.log(imovel);
     this.navCtrl.push(ResidenciaUsuarioFormPage, {
       item: imovel.id
@@ -49,7 +49,7 @@ export class ResidenciaUsuarioListPage implements OnInit{
     this.navCtrl.push(ResidenciaUsuarioFormPage);
   }
 
-  excluir(event, imovel: ResidenciaUsuarioDTO) {
+  excluir(imovel: ResidenciaUsuarioDTO) {
     // TODO chamar api de delete
   }
 }

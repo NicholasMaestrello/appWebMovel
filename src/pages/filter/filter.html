@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Filtro
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="filterForm">
+    <ion-item>
+      <ion-label>Tipo:</ion-label>
+      <ion-select formControlName="kind">
+        <ion-option [value]="'house'">Casa</ion-option>
+        <ion-option [value]="'apartment'">Apartamento</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Aluguel ?</ion-label>
+      <ion-checkbox formControlName="for_rent"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Faixa do alugel</ion-label>
+      <ion-input type="number" formControlName="max_rent_value"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Comprar ?</ion-label>
+      <ion-checkbox formControlName="for_sale"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Faixa para Comprar</ion-label>
+      <ion-input type="number" formControlName="max_sell_value"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Área (m²)</ion-label>
+      <ion-input type="number" formControlName="max_area_size"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Numero de Quartos</ion-label>
+      <ion-input type="number" formControlName="number_of_rooms"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Numero de Banheiros</ion-label>
+      <ion-input type="number" formControlName="number_of_bathrooms"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Vagas de Garagem</ion-label>
+      <ion-input type="number" formControlName="number_of_parking_lots"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Estado</ion-label>
+      <ion-select formControlName="state">
+        <ion-option *ngFor="let estado of estados$ | async" [value]="estado.sigla">{{estado.sigla}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Cidade</ion-label>
+      <ion-input type="text" formControlName="city"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Bairro</ion-label>
+      <ion-input type="text" formControlName="neighborhood"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Rua</ion-label>
+      <ion-input type="text" formControlName="street"></ion-input>
+    </ion-item>
+    <button ion-button class="submit-btn" full type="button" (click)="filtrar()">
+      Filtrar
+    </button>
+    <button ion-button class="submit-btn" full type="button" color="danger"  (click)="clear()">
+      Limpar Filtro
+    </button>
+  </form>
+</ion-content>
+

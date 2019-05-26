@@ -1,53 +1,45 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { ResidenciaDetalhePage } from '../residencia-detalhe/residencia-detalhe';
+import {Component, OnInit} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {ResidenciaDetalhePage} from '../residencia-detalhe/residencia-detalhe';
 import {HttpClientProvider} from "../../providers/http-client/http-client";
 import {ResidenciaDTO} from "../../model/residencias";
-
-/**
- * Generated class for the ResidenciaListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {FilterPage} from "../filter/filter";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'page-residencia-list',
   templateUrl: 'residencia-list.html',
 })
-export class ResidenciaListPage {
-
-  residencias: ResidenciaDTO[];
+export class ResidenciaListPage implements OnInit {
+  imoveis$: Observable<ResidenciaDTO[]>;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public httpClient: HttpClientProvider) {
   }
 
-  ionViewDidLoad() {
+  ngOnInit(): void {
+    this.buscarImovelGambs();
     this.buscarImoveis();
   }
 
-  itemTapped(id: number) {
-    // navegando para pagina de detalhes da residencia
+  showInfo(id: number) {
     this.navCtrl.push(ResidenciaDetalhePage, {
       item: id
     });
   }
 
+  buscarImovelGambs() {
+    this.imoveis$ = this.httpClient.getImoveisFiltrados(null);
+  }
+
   buscarImoveis() {
-    this.httpClient.getImoveisFiltrados(null).subscribe(
-      res => {
-        this.setarImoveis(res);
-      },
-      err => {
-        console.log(err)
-      }
-    )
+    this.httpClient.filtro.subscribe(value => {
+      this.imoveis$ = this.httpClient.getImoveisFiltrados(value);
+    })
   }
 
-  setarImoveis(residencias: ResidenciaDTO[]) {
-    this.residencias = residencias;
+  openFilter() {
+    this.navCtrl.push(FilterPage);
   }
-
 }

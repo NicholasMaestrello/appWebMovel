@@ -3,9 +3,9 @@ import {ModalController, NavController, NavParams, ViewController} from 'ionic-a
 import {HttpClientProvider} from "../../providers/http-client/http-client";
 import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
-import {UserDTO} from "../../model/user";
 import {ErrorPage} from "../error/error";
 import {ResidenciaUsuarioDTO} from "../../model/residencias";
+import {Storage} from "@ionic/storage";
 
 @Component({
   selector: 'page-residencia-usuario-form',
@@ -17,12 +17,15 @@ export class ResidenciaUsuarioFormPage implements OnInit {
 
   newResidencia = true;
 
+  user = '';
+
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public httpClient: HttpClientProvider,
               private fb: FormBuilder,
               public modalCtrl: ModalController,
-              public viewCtrl: ViewController) {
+              public viewCtrl: ViewController,
+              private storage: Storage) {
   }
 
   ngOnInit(): void {
@@ -30,8 +33,9 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.estados$ = this.getEstados();
     this.createForm();
     this.createFormSubscribe();
+    this.getUser();
 
-    if(!!idImovel) {
+    if (!!idImovel) {
       this.newResidencia = false;
       this.getResidenciaDetalhe(idImovel);
     }
@@ -40,7 +44,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   getResidenciaDetalhe(idResidencia: number) {
     this.httpClient.getImoveisUsuarioDetalhe(idResidencia).subscribe(
       res => this.preencherFormulario(res),
-      err => console.log(err)
+      err => this.showError(err)
     );
   }
 
@@ -56,6 +60,9 @@ export class ResidenciaUsuarioFormPage implements OnInit {
       sell_price: [null],
       rent_price: [null],
       area: [null],
+      number_of_rooms: [null],
+      number_of_parking_lots: [null],
+      number_of_bathrooms: [null],
       address: this.fb.group({
         zipcode: [null],
         state: [null],
@@ -89,7 +96,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         const neighborhood = v.neighborhood;
         const street_name = v.street_name;
         const street_number = v.street_number;
-        if(state && city && neighborhood && street_name && street_number) {
+        if (state && city && neighborhood && street_name && street_number) {
           this.httpClient.getLatLongAddress(state, city, neighborhood, street_name, street_number).subscribe(
             res => this.resolveLatLong(res),
             err => this.showError(err)
@@ -107,7 +114,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   }
 
   salvar() {
-    if(this.newResidencia) {
+    if (this.newResidencia) {
       this.cadastrar();
     } else {
       this.alterar();
@@ -116,8 +123,32 @@ export class ResidenciaUsuarioFormPage implements OnInit {
 
   createResidenciaDTO(): ResidenciaUsuarioDTO {
     const formValue = this.residenciaForm.value;
-    const residenciaUsuario: ResidenciaUsuarioDTO = new ResidenciaUsuarioDTO(formValue);
-    console.log(residenciaUsuario);
+    const residenciaUsuario: ResidenciaUsuarioDTO = {
+      kind: formValue.kind,
+      for_sale: formValue.for_sale,
+      for_rent: formValue.for_rent,
+      latitude: formValue.latitude,
+      longitude: formValue.longitude,
+      sell_price: formValue.sell_price,
+      rent_price: formValue.rent_price,
+      area: formValue.area,
+      username: this.user,
+      number_of_rooms: formValue.number_of_rooms,
+      number_of_parking_lots: formValue.number_of_parking_lots,
+      number_of_bathrooms: formValue.number_of_bathrooms,
+      address: {
+        city: formValue.address.city,
+        street_name: formValue.address.street_name,
+        state: formValue.address.state,
+        street_number: formValue.address.street_number,
+        apartment: formValue.address.apartment,
+        neighborhood: formValue.address.neighborhood,
+        zipcode: formValue.address.zipcode
+      }
+    };
+    if(formValue.id) {
+      residenciaUsuario.id = formValue.id
+    }
     return residenciaUsuario;
   }
 
@@ -125,21 +156,20 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     const imovel = this.createResidenciaDTO();
     this.httpClient.postImoveisUsuario(imovel).subscribe(
       res => this.viewCtrl.dismiss(),
-        err => this.showError(err)
+      err => this.showError(err)
     )
   }
 
   alterar() {
     const imovel = this.createResidenciaDTO();
-    console.log(imovel)
     this.httpClient.putImoveisUsuario(imovel).subscribe(
       res => this.viewCtrl.dismiss(),
-        err => this.showError(err)
+      err => this.showError(err)
     )
   }
 
   preencherFormulario(imovel: ResidenciaUsuarioDTO) {
-    this.residenciaForm.setValue(imovel);
+    this.residenciaForm.patchValue(imovel);
   }
 
   resolveLatLong(googleGeocoding: any) {
@@ -148,6 +178,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
       let lng = googleGeocoding.results[0].geometry.location.lng
       this.latitude.setValue(lat);
       this.longitude.setValue(lng);
+    } catch (err) {
+      console.log(err)
     } finally {
       // do nothing
     }
@@ -157,6 +189,12 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     console.log(err);
     const modal = this.modalCtrl.create(ErrorPage);
     modal.present();
+  }
+
+  getUser() {
+    this.storage.get('userName').then(value => {
+      this.user = value;
+    })
   }
 
   // get dos controls

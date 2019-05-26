@@ -17,6 +17,8 @@ export class User {
   apartment: string;
   neighborhood: string;
   zipcode: string;
+  telephone?: string;
+  cell_phone?: string;
 
   public constructor(init?: Partial<User>) {
     Object.assign(this, init);

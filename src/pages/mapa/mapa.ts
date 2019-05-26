@@ -2,8 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {ResidenciaDetalhePage} from '../residencia-detalhe/residencia-detalhe';
 import {HttpClientProvider} from "../../providers/http-client/http-client";
-import {ResidenciaDTO} from "../../model/residencias";
 import {Observable} from "rxjs";
+import {FilterPage} from "../filter/filter";
+import {ResidenciaDTO} from "../../model/residencias";
+import {Geolocation} from '@ionic-native/geolocation';
 
 @Component({
   selector: 'page-mapa',
@@ -11,24 +13,30 @@ import {Observable} from "rxjs";
 })
 export class MapaPage implements OnInit {
   imoveis$: Observable<ResidenciaDTO[]>;
-  residencias: ResidenciaDTO[];
+
+  latUsuario = -21.763409;
+  lngUsuario = -43.349034;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              private httpClient: HttpClientProvider) {
+              private httpClient: HttpClientProvider,
+              private geolocation: Geolocation) {
   }
 
   ngOnInit(): void {
+    this.buscarImovelGambs();
     this.buscarImoveis();
-    this.setarPosicaoAtual();
+    this.getLocation();
   }
 
-  setarPosicaoAtual() {
-    // TODO recuperar posicão atual
+  buscarImovelGambs() {
+    this.imoveis$ = this.httpClient.getImoveisFiltrados(null);
   }
 
   buscarImoveis() {
-    this.imoveis$ = this.httpClient.getImoveisFiltrados(null);
+    this.httpClient.filtro.subscribe(value => {
+      this.imoveis$ = this.httpClient.getImoveisFiltrados(value);
+    })
   }
 
 
@@ -49,5 +57,20 @@ export class MapaPage implements OnInit {
 
   onChoseLocation(event) {
     // TODO fazer algo
+  }
+
+  openFilter() {
+    this.navCtrl.push(FilterPage);
+  }
+
+  getLocation() {
+    this.geolocation.getCurrentPosition().then(
+      pos => {
+        if (pos.coords) {
+          this.latUsuario = pos.coords.latitude;
+          this.lngUsuario = pos.coords.longitude;
+        }
+      }
+    )
   }
 }

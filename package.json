@@ -8,6 +8,7 @@
     "start": "ionic-app-scripts serve",
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
+    "build-demo": "ionic cordova build android --prod",
     "lint": "ionic-app-scripts lint"
   },
   "dependencies": {
@@ -50,7 +51,9 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "cordova-plugin-geolocation": {},
+      "cordova-plugin-geolocation": {
+        "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
+      },
       "cordova-plugin-nativegeocoder": {},
       "cordova-sqlite-storage": {},
       "cordova-plugin-whitelist": {},

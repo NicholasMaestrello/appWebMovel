@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController, NavController, NavParams} from 'ionic-angular';
+import {Loading, LoadingController, ModalController, NavController, NavParams} from 'ionic-angular';
 import {CadastroUsuarioPage} from '../cadastro-usuario/cadastro-usuario';
 import {HomePage} from '../home/home';
 import {Storage} from '@ionic/storage';
@@ -7,7 +7,6 @@ import {HttpClientProvider} from '../../providers/http-client/http-client';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginDto} from "../../model/login.dto";
 import {ErrorPage} from "../error/error";
-import {ResidenciaUsuarioFormPage} from "../residencia-usuario-form/residencia-usuario-form";
 
 @Component({
   selector: 'page-login',
@@ -15,13 +14,15 @@ import {ResidenciaUsuarioFormPage} from "../residencia-usuario-form/residencia-u
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
+  loader: Loading;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private storage: Storage,
               private fb: FormBuilder,
               private httpClient: HttpClientProvider,
-              public modalCtrl: ModalController) {
+              public modalCtrl: ModalController,
+              private loadingCtrl: LoadingController) {
   }
 
   ngOnInit(): void {
@@ -40,18 +41,16 @@ export class LoginPage implements OnInit {
   }
 
   logar() {
+    this.showLoadingBar()
     const login = this.criarLoginDTO();
     this.httpClient.login(login).subscribe(
       res => {
-        console.log(res);
         this.storage.set('authToken', res.token);
         this.storage.set('userName', res.username);
+        this.httpClient.atualizarToken();
+        this.loader.dismiss();
         this.navCtrl.setRoot(HomePage);
-      }, err => {
-        console.log(err);
-        const modal = this.modalCtrl.create(ErrorPage);
-        modal.present();
-      }
+      }, err => this.showError(err)
     )
   }
 
@@ -63,12 +62,26 @@ export class LoginPage implements OnInit {
 
   criarLoginDTO(): LoginDto {
     const login: LoginDto = {
-      'login': {
-        'email': this.email.value,
-        'password': this.senha.value
+      login: {
+        email: this.email.value,
+        password: this.senha.value
       }
     }
     return login;
+  }
+
+  showLoadingBar() {
+    this.loader = this.loadingCtrl.create({
+      content: "Carregando..."
+    });
+    this.loader.present();
+  }
+
+  showError(err) {
+    console.log(err);
+    this.loader.dismiss();
+    const modal = this.modalCtrl.create(ErrorPage);
+    modal.present();
   }
 
   // get dos controls

@@ -1,24 +1,30 @@
 <ion-header>
   <ion-navbar>
-  <button ion-button menuToggle>
+    <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>mapa</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="openFilter()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <agm-map [zoom]="14" [latitude]="-21.763409" [longitude]="-43.349034" (mapClick)="onChoseLocation($event)">
+  <agm-map [zoom]="14" [latitude]="latUsuario" [longitude]="lngUsuario" (mapClick)="onChoseLocation($event)">
     <agm-marker
       *ngFor="let imovel of imoveis$ | async"
       [latitude]="getLat(imovel)"
       [longitude]="getLgn(imovel)"
       [title]="'Descricao'"
+      iconUrl="./assets/icon/house.png"
       (markerClick)="showDetalhe(imovel)">
     </agm-marker>
     <agm-marker
-      [latitude]="-21.763409"
-      [longitude]="-43.349034"
+      [latitude]="latUsuario"
+      [longitude]="lngUsuario"
+      iconUrl="./assets/icon/person.png"
       [title]="'Você está aqui!'">
     </agm-marker>
   </agm-map>

@@ -6,9 +6,51 @@
 
 <ion-content padding>
 
-  <h3>Detalhes da Residencia</h3>
+  <h2>{{residencia?.address?.street_name}}, {{residencia?.address?.street_number}} - {{residencia?.address?.city}}</h2>
 
-  <div>
-    <span>{{residencia?.id}}</span>
-  </div>
+  <ion-card class="card-slide">
+    <ion-card-header>
+      <ion-icon class="ion-icon" name="ios-cash-outline"></ion-icon>
+      <h3>
+        <b>{{residencia?.kind}}</b>
+      </h3>
+      <h3>
+        <b>R${{residencia?.sell_price}}</b>
+      </h3>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-item-group class="item-group">
+    <ion-item-divider color="light">
+      <ion-icon class="ion-icon-down" name="ios-information-circle-outline"></ion-icon>
+      <p class="title">
+        <b>INFORMAÇÕES DO IMÓVEL</b>
+      </p>
+    </ion-item-divider>
+    <ion-item>
+      <b>Vagas de Garagem:</b> {{residencia?.parking_spaces}}</ion-item>
+    <ion-item>
+      <b>Quartos:</b> {{residencia?.bedrooms}}</ion-item>
+    <ion-item>
+      <b>Banheiros:</b> {{residencia?.bathrooms}}</ion-item>
+    <ion-item>
+      <b>Área útil(M²):</b> {{residencia?.useful_area}}</ion-item>
+    <ion-item>
+      <b>Área total(M²):</b> {{residencia?.total_area}}</ion-item>
+  </ion-item-group>
+  <br/>
+  <ion-item-group class="item-group">
+    <ion-item-divider color="light">
+      <ion-icon class="ion-icon-down" name="person"></ion-icon>
+      <div class="title">
+        <b>INFORMAÇÕES DO PROPRIETÁRIO</b>
+      </div>
+    </ion-item-divider>
+    <ion-item>
+      <b>Nome:</b> {{residencia?.user?.name}}</ion-item>
+    <ion-item>
+      <b>E-mail:</b> {{residencia?.user?.email}}</ion-item>
+    <ion-item>
+      <b>Telefone:</b> {{residencia?.user?.telephone}}</ion-item>
+  </ion-item-group>
 </ion-content>

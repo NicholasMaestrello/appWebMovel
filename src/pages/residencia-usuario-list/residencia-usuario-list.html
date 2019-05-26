@@ -3,29 +3,33 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Suas Residencias</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h3>Residencias para Você</h3>
   <div>
-    <button (click)="novo()">Novo</button>
+    <button (click)="novo()" ion-button clear small color="danger" icon-start>
+      <ion-icon name="add-circle"></ion-icon>
+      Novo
+    </button>
   </div>
-
-  <ion-list>
-    <ion-card ion-item *ngFor="let residencia of residencias">
-      <ion-card-header>
-        title
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="item-note" item-end>
-          {{residencia.area}}
-        </div>
-        <button (click)="editar($event, residencia)">Editar</button>
-        <button (click)="excluir($event, residencia)">Excluir</button>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+  <ion-card class="card" ion-item *ngFor="let item of residencias">
+    <ion-card-content>
+      <div>Tipo de imovel: {{item.kind}}</div>
+      <div *ngIf="item.for_sale">Preço para venda: {{item.sell_price}}</div>
+      <div *ngIf="item.for_rent">Preço do Aluguel: {{item.rent_price}}</div>
+    </ion-card-content>
+    <ion-row no-padding>
+      <ion-col>
+        <button (click)="editar(item)" ion-button clear small color="danger" icon-start>
+          <ion-icon name="create"></ion-icon>
+          Editar
+        </button>
+        <button (click)="excluir(item)" ion-button clear small color="danger" icon-start>
+          <ion-icon name="trash"></ion-icon>
+          Excluir
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 </ion-content>
