@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController, NavController, NavParams, ViewController} from 'ionic-angular';
+import {Loading, LoadingController, ModalController, NavController, NavParams, ViewController} from 'ionic-angular';
 import {HttpClientProvider} from '../../providers/http-client/http-client';
 import {Observable} from 'rxjs/Observable';
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
@@ -13,19 +13,19 @@ import {Storage} from "@ionic/storage";
 })
 export class CadastroUsuarioPage implements OnInit {
   estados$: Observable<any>;
-
   usuarioForm: FormGroup;
-
   novoUsuario = false;
+  loader: Loading;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private httpClient: HttpClientProvider,
     private fb: FormBuilder,
-    public modalCtrl: ModalController,
     public viewCtrl: ViewController,
-    private storage: Storage) {
+    private storage: Storage,
+    public modalCtrl: ModalController,
+    private loadingCtrl: LoadingController) {
   }
 
   ngOnInit(): void {
@@ -34,13 +34,7 @@ export class CadastroUsuarioPage implements OnInit {
     this.createForm();
     this.createFormSubscribe();
     this.estados$ = this.getEstados();
-
-    if (!!novoUsuario) {
-      this.novoUsuario = true;
-    } else {
-      this.novoUsuario = false;
-      this.getUser();
-    }
+    this.checkMode(novoUsuario);
   }
 
   public getEstados() {
@@ -52,11 +46,6 @@ export class CadastroUsuarioPage implements OnInit {
       name: [null, [Validators.required]],
       username: [null],
       email: [null],
-      senhaGroup: this.fb.group({
-          password: [null],
-          password_confirmation: [null]
-        }, {validator: Validators.compose([this.confirmarSenhaIgual()])}
-      ),
       document: [null],
       birthdate: [null],
       zipcode: [null],
@@ -100,15 +89,27 @@ export class CadastroUsuarioPage implements OnInit {
     this.rua.setValue(cep.logradouro);
   }
 
+  checkMode(novoUsuario) {
+    if (!!novoUsuario) {
+      this.novoUsuario = true;
+      this.usuarioForm.addControl('senhaGroup', this.fb.group({
+          password: [null],
+          password_confirmation: [null]
+        }, {validator: Validators.compose([this.confirmarSenhaIgual()])}
+      ))
+    } else {
+      this.novoUsuario = false;
+      this.getUser();
+    }
+  }
+
   private getUser() {
+    this.createLoadingBar();
+    this.loader.present();
     this.storage.get('userName').then((val: string) => {
       this.httpClient.getUser(val).subscribe(
         res => this.populateUserForm(res),
-        err => {
-          console.log(err);
-          const modal = this.modalCtrl.create(ErrorPage);
-          modal.present();
-        }
+        err => this.showError(err)
       )
     });
   }
@@ -119,10 +120,6 @@ export class CadastroUsuarioPage implements OnInit {
         name: user.name,
         username: user.username,
         email: user.email,
-        senhaGroup: {
-          password: user.password,
-          password_confirmation: user.password_confirmation,
-        },
         document: user.document,
         birthdate: user.birthdate,
         city: user.city,
@@ -135,35 +132,45 @@ export class CadastroUsuarioPage implements OnInit {
         telephone: user.telephone,
         cell_phone: user.cell_phone
       }
-    )
+    );
+    this.loader.dismiss();
   }
 
   createUserDTO(): UserDTO {
     const formValue = this.usuarioForm.value;
-    const user: UserDTO = {
-      user: {
-        name: formValue.name,
-        username: formValue.username,
-        email: formValue.email,
-        password: formValue.senhaGroup.password,
-        password_confirmation: formValue.senhaGroup.password_confirmation,
-        document: formValue.document,
-        birthdate: formValue.birthdate,
-        zipcode: formValue.zipcode,
-        state: formValue.state,
-        city: formValue.city,
-        neighborhood: formValue.neighborhood,
-        street_name: formValue.street_name,
-        street_number: formValue.street_number,
-        apartment: formValue.apartment
-        // telephone: formValue.telephone,
-        // cell_phone: formValue.cell_phone
-      }
+    const user: User = {
+      name: formValue.name,
+      username: formValue.username,
+      email: formValue.email,
+      document: formValue.document,
+      birthdate: formValue.birthdate,
+      zipcode: formValue.zipcode,
+      state: formValue.state,
+      city: formValue.city,
+      neighborhood: formValue.neighborhood,
+      street_name: formValue.street_name,
+      street_number: formValue.street_number,
+      apartment: formValue.apartment,
+      telephone: formValue.telephone,
+      cell_phone: formValue.cell_phone
     }
-    return user;
+
+    if (this.novoUsuario) {
+      console.log(formValue)
+      user.password = formValue.senhaGroup.password;
+      user.password_confirmation = formValue.senhaGroup.password_confirmation
+    }
+
+    const userDTO: UserDTO = {
+      user: user
+    }
+
+    return userDTO;
   }
 
   salvar() {
+    this.createLoadingBar();
+    this.loader.present();
     if (this.novoUsuario) {
       this.cadastrar();
     } else {
@@ -175,25 +182,19 @@ export class CadastroUsuarioPage implements OnInit {
     const user = this.createUserDTO();
     this.httpClient.postUser(user).subscribe(
       res => {
+        this.loader.dismiss();
         this.viewCtrl.dismiss();
-      }, err => {
-        console.log(err);
-        const modal = this.modalCtrl.create(ErrorPage);
-        modal.present();
-      }
+      }, err => this.showError(err)
     )
   }
 
   alterar() {
     const user = this.createUserDTO();
-    this.httpClient.patchUser(user).subscribe(
+    this.httpClient.patchUser(user.user.username, user).subscribe(
       res => {
-        this.viewCtrl.dismiss();
-      }, err => {
-        console.log(err);
-        const modal = this.modalCtrl.create(ErrorPage);
-        modal.present();
-      }
+        this.loader.dismiss();
+        this.getUser();
+      }, err => this.showError(err)
     )
   }
 
@@ -216,5 +217,18 @@ export class CadastroUsuarioPage implements OnInit {
 
   get rua(): AbstractControl {
     return this.usuarioForm.get('street_name');
+  }
+
+  createLoadingBar() {
+    this.loader = this.loadingCtrl.create({
+      content: "Carregando..."
+    });
+  }
+
+  showError(err) {
+    console.log(err);
+    this.loader.dismiss();
+    const modal = this.modalCtrl.create(ErrorPage);
+    modal.present();
   }
 }

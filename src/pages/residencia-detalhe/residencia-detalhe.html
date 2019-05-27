@@ -12,10 +12,13 @@
     <ion-card-header>
       <ion-icon class="ion-icon" name="ios-cash-outline"></ion-icon>
       <h3>
-        <b>{{residencia?.kind}}</b>
+        <b>{{residencia?.kind == 'house' ? 'Casa' : 'Apartamento'}}</b>
       </h3>
       <h3>
-        <b>R${{residencia?.sell_price}}</b>
+        <b *ngIf="residencia?.for_sale">Preço para Compra: R${{residencia?.sell_price}}</b>
+      </h3>
+      <h3>
+        <b *ngIf="residencia?.for_rent">Preço para Aluguel: R${{residencia?.rent_price}}</b>
       </h3>
     </ion-card-header>
   </ion-card>
@@ -28,15 +31,17 @@
       </p>
     </ion-item-divider>
     <ion-item>
-      <b>Vagas de Garagem:</b> {{residencia?.parking_spaces}}</ion-item>
+      <b>Vagas de Garagem:</b> {{residencia?.number_of_parking_lots}}
+    </ion-item>
     <ion-item>
-      <b>Quartos:</b> {{residencia?.bedrooms}}</ion-item>
+      <b>Quartos:</b> {{residencia?.number_of_rooms}}
+    </ion-item>
     <ion-item>
-      <b>Banheiros:</b> {{residencia?.bathrooms}}</ion-item>
+      <b>Banheiros:</b> {{residencia?.number_of_bathrooms}}
+    </ion-item>
     <ion-item>
-      <b>Área útil(M²):</b> {{residencia?.useful_area}}</ion-item>
-    <ion-item>
-      <b>Área total(M²):</b> {{residencia?.total_area}}</ion-item>
+      <b>Área total(M²):</b> {{residencia?.area}}
+    </ion-item>
   </ion-item-group>
   <br/>
   <ion-item-group class="item-group">

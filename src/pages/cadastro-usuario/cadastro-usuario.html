@@ -3,7 +3,7 @@
     <button *ngIf="!novoUsuario" ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>cadastroUsuario</ion-title>
+    <ion-title *ngIf="!novoUsuario">Minha Conta</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -21,7 +21,7 @@
       <ion-label>Email</ion-label>
       <ion-input type="text" formControlName="email"></ion-input>
     </ion-item>
-    <div formGroupName="senhaGroup">
+    <div *ngIf="novoUsuario" formGroupName="senhaGroup">
       <ion-item>
         <ion-label>Senha</ion-label>
         <ion-input type="password" formControlName="password"></ion-input>

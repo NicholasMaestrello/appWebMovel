@@ -36,10 +36,6 @@ export class LoginPage implements OnInit {
     });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
-  }
-
   logar() {
     this.showLoadingBar()
     const login = this.criarLoginDTO();
@@ -47,7 +43,7 @@ export class LoginPage implements OnInit {
       res => {
         this.storage.set('authToken', res.token);
         this.storage.set('userName', res.username);
-        this.httpClient.atualizarToken();
+        this.httpClient.atualizarToken(res.token);
         this.loader.dismiss();
         this.navCtrl.setRoot(HomePage);
       }, err => this.showError(err)

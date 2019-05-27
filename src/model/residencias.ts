@@ -1,5 +1,9 @@
 import {User} from "./user";
 
+export class ImovelDTO {
+  property: ResidenciaUsuarioDTO;
+}
+
 export class ResidenciaUsuarioDTO {
   id?: number;
   kind?: string;
@@ -22,18 +26,20 @@ export class ResidenciaDTO {
   kind: string;
   for_sale: boolean;
   for_rent: boolean;
-  address_id: number;
   latitude: string;
   longitude: string;
   sell_price: string;
   rent_price: string;
   area: string;
-  user_id: number;
   user?: User;
+  number_of_rooms?: number;
+  number_of_parking_lots?: number;
+  number_of_bathrooms?: number;
   address: AddressDTO;
 }
 
 export class AddressDTO {
+  id?: number;
   city: string;
   street_name: string;
   state: string;

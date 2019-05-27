@@ -3,9 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {User, UserDTO} from "../../model/user";
 import {LoginDto, LoginRes} from "../../model/login.dto";
-import {ResidenciaDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
-import {of} from "rxjs/observable/of";
-import {Storage} from "@ionic/storage";
+import {ImovelDTO, ResidenciaDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
 import {mapsConfig} from "../../environments/environment";
 import {ReplaySubject} from "rxjs";
 import {Filtro} from "../../model/filtro";
@@ -23,14 +21,11 @@ export class HttpClientProvider {
   private filtroSubject = new ReplaySubject();
 
 
-  constructor(public http: HttpClient,
-              private storage: Storage) {
+  constructor(public http: HttpClient) {
   }
 
-  public atualizarToken() {
-    this.storage.get('authToken').then((val) => {
-      this.token = val
-    })
+  public atualizarToken(token: string) {
+    this.token = token;
   }
 
   public atualizarFiltro(filtro) {
@@ -71,13 +66,14 @@ export class HttpClientProvider {
     return this.http.post(`${this.urlApiWebMovel}users/`, user)
   }
 
-  public patchUser(user: UserDTO): Observable<any> {
-    return this.http.patch(`${this.urlApiWebMovel}users/`, user)
+  public patchUser(userName: string, user: UserDTO): Observable<any> {
+    const authHeader = this.getAuthHeader();
+    return this.http.patch(`${this.urlApiWebMovel}users/${userName}`, user, authHeader)
   }
 
   public getUser(username: string): Observable<User> {
-    return this.getUserMock();
-    // return this.http.get(`${this.urlApiWebMovel}users/${username}`)
+    const authHeader = this.getAuthHeader();
+    return this.http.get<User>(`${this.urlApiWebMovel}users/${username}`, authHeader);
   }
 
   public login(login: LoginDto): Observable<LoginRes> {
@@ -88,48 +84,51 @@ export class HttpClientProvider {
   // apis residencias para pesquisar
   public getImoveisFiltrados(filtro: Filtro): Observable<ResidenciaDTO[]> {
     const params = this.resolveParamsPesquisa(filtro);
-    if(params.keys() && params.keys().length > 0){
-      console.log('consulta com filtro');
+    const authHeader = this.getAuthHeader();
+    if (params.keys() && params.keys().length > 0) {
+      return this.http.get<ResidenciaDTO[]>(`${this.urlApiWebMovel}properties`, {
+        params: params,
+        headers: authHeader.headers
+      });
     }
-      // return this.http.get<ResidenciaDTO[]>(`${this.urlApiWebMovel}properties`, {params: params})
-    return this.getResidenciasMock();
-    // return this.http.get<ResidenciaDTO[]>(`${this.urlApiWebMovel}properties/`)
+    console.log(authHeader);
+    return this.http.get<ResidenciaDTO[]>(`${this.urlApiWebMovel}properties/`, authHeader);
   }
 
   public getImoveisDetalhe(idResidencia: number): Observable<ResidenciaDTO> {
-    return this.getResidenciasDetalheMock();
-    // return this.http.get<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`)
+    const authHeader = this.getAuthHeader();
+    return this.http.get<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`, authHeader);
   }
 
   // apis residencia usuario
   public getImoveisUsuario(userName: string): Observable<ResidenciaUsuarioDTO[]> {
-    return this.getResidenciasUsuarioMock();
-    // return this.http.get<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`)
+    let authHeader = this.getAuthHeader();
+    return this.http.get<ResidenciaUsuarioDTO[]>(`${this.urlApiWebMovel}users/${userName}/properties`, authHeader);
   }
 
   public getImoveisUsuarioDetalhe(idResidencia: number): Observable<ResidenciaUsuarioDTO> {
-    return this.getResidenciasUsuarioDetalheMock();
-    // return this.http.get<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`)
+    let authHeader = this.getAuthHeader();
+    return this.http.get<ResidenciaUsuarioDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`, authHeader);
   }
 
-  public postImoveisUsuario(residencia: ResidenciaUsuarioDTO): Observable<ResidenciaUsuarioDTO> {
+  public postImoveisUsuario(residencia: ImovelDTO): Observable<ResidenciaUsuarioDTO> {
     let authHeader = this.getAuthHeader();
     return this.http.post<ResidenciaUsuarioDTO>(`${this.urlApiWebMovel}properties`, residencia, authHeader)
   }
 
-  public putImoveisUsuario(residencia: ResidenciaUsuarioDTO): Observable<ResidenciaUsuarioDTO> {
-    return this.getResidenciasUsuarioDetalheMock();
-    // return this.http.patch<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`, residencia)
+  public putImoveisUsuario(idResidencia: number, residencia: ImovelDTO): Observable<ResidenciaUsuarioDTO> {
+    let authHeader = this.getAuthHeader();
+    return this.http.patch<ResidenciaUsuarioDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`, residencia, authHeader)
   }
 
   public deleteImoveisUsuario(idResidencia: number): Observable<any> {
-    return of();
-    // return this.http.delete<ResidenciaDTO>(`${this.urlApiWebMovel}properties/${idResidencia}`)
+    const authHeader = this.getAuthHeader();
+    return this.http.delete<any>(`${this.urlApiWebMovel}properties/${idResidencia}`, authHeader);
   }
 
   private resolveParamsPesquisa(filtro: Filtro): HttpParams {
     let params = new HttpParams();
-    if(!filtro)
+    if (!filtro)
       return params;
     if (filtro.kind) params = params.append('kind', filtro.kind);
     if (filtro.for_rent) params = params.append('for_rent', String(filtro.for_rent));
@@ -148,178 +147,5 @@ export class HttpClientProvider {
     if (filtro.neighborhood) params = params.append('neighborhood', filtro.neighborhood);
     if (filtro.street) params = params.append('street', filtro.street);
     return params
-  }
-
-  // Todo rerirar esses mocks
-
-  private getUserMock(): Observable<User> {
-    const user: User = {
-      name: 'nicholas',
-      username: 'nicholas',
-      email: 'nicholas@mail.com',
-      password: '123456',
-      password_confirmation: '123456',
-      document: '45898095837',
-      birthdate: '1996-07-26',
-      city: 'São Paulo',
-      street_name: 'Rua Padre Adelino',
-      state: 'SP',
-      street_number: '930',
-      apartment: 'Alto',
-      neighborhood: 'Quarta Parada',
-      zipcode: '03303000',
-      telephone: '1121298748',
-      cell_phone: '11964896394'
-    }
-    return of(user);
-  }
-
-  private getResidenciasMock(): Observable<ResidenciaDTO[]> {
-    const house1: ResidenciaDTO = {
-      id: 1,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      address_id: 1,
-      latitude: '-22.763409',
-      longitude: '-41.349034',
-      sell_price: '1900435.50',
-      rent_price: "5000.00",
-      area: "125",
-      user_id: 1,
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const house2: ResidenciaDTO = {
-      id: 1,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      address_id: 1,
-      latitude: '-23.763409',
-      longitude: '-42.349034',
-      sell_price: '1900435.50',
-      rent_price: "5000.00",
-      area: "125",
-      user_id: 1,
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const myObservable: Observable<ResidenciaDTO[]> = of([house1, house2]);
-    return myObservable;
-  }
-
-  private getResidenciasDetalheMock(): Observable<ResidenciaDTO> {
-    const house1: ResidenciaDTO = {
-      id: 1,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      address_id: 1,
-      latitude: '-22.763409',
-      longitude: '-41.349034',
-      sell_price: '1900435.50',
-      rent_price: "5000.00",
-      area: "125",
-      user_id: 1,
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const myObservable: Observable<ResidenciaDTO> = of(house1);
-    return myObservable;
-  }
-
-  private getResidenciasUsuarioMock(): Observable<ResidenciaUsuarioDTO[]> {
-    const house1: ResidenciaUsuarioDTO = {
-      id: 1,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      latitude: -22.763409,
-      longitude: -41.349034,
-      sell_price: 1900435.50,
-      rent_price: 5000.00,
-      area: 125,
-      username: "nicholas",
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const house2: ResidenciaUsuarioDTO = {
-      id: 2,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      latitude: -23.763409,
-      longitude: -42.349034,
-      sell_price: 1900435.50,
-      rent_price: 5000.00,
-      area: 125,
-      username: "nicholas",
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const myObservable: Observable<ResidenciaUsuarioDTO[]> = of([house1, house2]);
-    return myObservable;
-  }
-
-  private getResidenciasUsuarioDetalheMock(): Observable<ResidenciaUsuarioDTO> {
-    const house1: ResidenciaUsuarioDTO = {
-      id: 1,
-      kind: "Casa",
-      for_sale: true,
-      for_rent: true,
-      latitude: -22.763409,
-      longitude: -41.349034,
-      sell_price: 1900435.50,
-      rent_price: 5000.00,
-      area: 125,
-      username: "nicholas",
-      address: {
-        city: "São Paulo",
-        street_name: "padre da nobrega",
-        state: "SP",
-        street_number: "1234",
-        apartment: "123",
-        neighborhood: "Jabaquara",
-        zipcode: "1239923"
-      }
-    }
-    const myObservable: Observable<ResidenciaUsuarioDTO> = of(house1);
-    return myObservable;
   }
 }

@@ -7,12 +7,19 @@
 </ion-header>
 
 <ion-content padding>
-  <div>
-    <button (click)="novo()" ion-button clear small color="danger" icon-start>
-      <ion-icon name="add-circle"></ion-icon>
-      Novo
-    </button>
-  </div>
+  <ion-toolbar class="toolbar-usuario-imoveis">
+    <ion-buttons start>
+      <button (click)="novo()" ion-button color="danger" icon-start>
+        <ion-icon name="add-circle"></ion-icon>
+        Novo
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button (click)="refresh()" ion-button>
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-card class="card" ion-item *ngFor="let item of residencias">
     <ion-card-content>
       <div>Tipo de imovel: {{item.kind}}</div>

@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController, NavController, NavParams, ViewController} from 'ionic-angular';
+import {Loading, LoadingController, ModalController, NavController, NavParams, ViewController} from 'ionic-angular';
 import {HttpClientProvider} from "../../providers/http-client/http-client";
 import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {ErrorPage} from "../error/error";
-import {ResidenciaUsuarioDTO} from "../../model/residencias";
+import {ImovelDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
 import {Storage} from "@ionic/storage";
 
 @Component({
@@ -14,18 +14,18 @@ import {Storage} from "@ionic/storage";
 export class ResidenciaUsuarioFormPage implements OnInit {
   residenciaForm: FormGroup;
   estados$: Observable<any>;
-
   newResidencia = true;
-
   user = '';
+  loader: Loading;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public httpClient: HttpClientProvider,
               private fb: FormBuilder,
-              public modalCtrl: ModalController,
               public viewCtrl: ViewController,
-              private storage: Storage) {
+              private storage: Storage,
+              public modalCtrl: ModalController,
+              private loadingCtrl: LoadingController) {
   }
 
   ngOnInit(): void {
@@ -42,6 +42,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   }
 
   getResidenciaDetalhe(idResidencia: number) {
+    this.createLoadingBar();
+    this.loader.present();
     this.httpClient.getImoveisUsuarioDetalhe(idResidencia).subscribe(
       res => this.preencherFormulario(res),
       err => this.showError(err)
@@ -64,6 +66,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
       number_of_parking_lots: [null],
       number_of_bathrooms: [null],
       address: this.fb.group({
+        id: [null],
         zipcode: [null],
         state: [null],
         city: [null],
@@ -113,7 +116,45 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.residenciaForm.get('address').get('street_name').setValue(cep.logradouro);
   }
 
+  createResidenciaDTO(): ImovelDTO {
+    const formValue = this.residenciaForm.value;
+    const imovel: ImovelDTO = {
+      property: {
+        kind: formValue.kind,
+        for_sale: formValue.for_sale,
+        for_rent: formValue.for_rent,
+        latitude: formValue.latitude,
+        longitude: formValue.longitude,
+        sell_price: formValue.sell_price,
+        rent_price: formValue.rent_price,
+        area: formValue.area,
+        username: this.user,
+        number_of_rooms: formValue.number_of_rooms,
+        number_of_parking_lots: formValue.number_of_parking_lots,
+        number_of_bathrooms: formValue.number_of_bathrooms,
+        address: {
+          city: formValue.address.city,
+          street_name: formValue.address.street_name,
+          state: formValue.address.state,
+          street_number: formValue.address.street_number,
+          apartment: formValue.address.apartment,
+          neighborhood: formValue.address.neighborhood,
+          zipcode: formValue.address.zipcode
+        }
+      }
+    };
+    if (formValue.id) {
+      imovel.property.id = formValue.id
+    }
+    if (formValue.address && formValue.address.id) {
+      imovel.property.address.id = formValue.address.id;
+    }
+    return imovel;
+  }
+
   salvar() {
+    this.createLoadingBar();
+    this.loader.present();
     if (this.newResidencia) {
       this.cadastrar();
     } else {
@@ -121,55 +162,31 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
   }
 
-  createResidenciaDTO(): ResidenciaUsuarioDTO {
-    const formValue = this.residenciaForm.value;
-    const residenciaUsuario: ResidenciaUsuarioDTO = {
-      kind: formValue.kind,
-      for_sale: formValue.for_sale,
-      for_rent: formValue.for_rent,
-      latitude: formValue.latitude,
-      longitude: formValue.longitude,
-      sell_price: formValue.sell_price,
-      rent_price: formValue.rent_price,
-      area: formValue.area,
-      username: this.user,
-      number_of_rooms: formValue.number_of_rooms,
-      number_of_parking_lots: formValue.number_of_parking_lots,
-      number_of_bathrooms: formValue.number_of_bathrooms,
-      address: {
-        city: formValue.address.city,
-        street_name: formValue.address.street_name,
-        state: formValue.address.state,
-        street_number: formValue.address.street_number,
-        apartment: formValue.address.apartment,
-        neighborhood: formValue.address.neighborhood,
-        zipcode: formValue.address.zipcode
-      }
-    };
-    if(formValue.id) {
-      residenciaUsuario.id = formValue.id
-    }
-    return residenciaUsuario;
-  }
-
   cadastrar() {
     const imovel = this.createResidenciaDTO();
     this.httpClient.postImoveisUsuario(imovel).subscribe(
-      res => this.viewCtrl.dismiss(),
+      res => {
+        this.loader.dismiss();
+        this.viewCtrl.dismiss();
+      },
       err => this.showError(err)
     )
   }
 
   alterar() {
     const imovel = this.createResidenciaDTO();
-    this.httpClient.putImoveisUsuario(imovel).subscribe(
-      res => this.viewCtrl.dismiss(),
+    this.httpClient.putImoveisUsuario(imovel.property.id, imovel).subscribe(
+      res => {
+        this.loader.dismiss();
+        this.viewCtrl.dismiss();
+      },
       err => this.showError(err)
     )
   }
 
   preencherFormulario(imovel: ResidenciaUsuarioDTO) {
     this.residenciaForm.patchValue(imovel);
+    this.loader.dismiss();
   }
 
   resolveLatLong(googleGeocoding: any) {
@@ -183,12 +200,6 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     } finally {
       // do nothing
     }
-  }
-
-  showError(err: any) {
-    console.log(err);
-    const modal = this.modalCtrl.create(ErrorPage);
-    modal.present();
   }
 
   getUser() {
@@ -214,4 +225,16 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     return this.residenciaForm.get('longitude');
   }
 
+  showError(err) {
+    console.log(err);
+    this.loader.dismiss();
+    const modal = this.modalCtrl.create(ErrorPage);
+    modal.present();
+  }
+
+  createLoadingBar() {
+    this.loader = this.loadingCtrl.create({
+      content: "Carregando..."
+    });
+  }
 }

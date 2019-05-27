@@ -6,8 +6,8 @@ export class User {
   name: string;
   username: string;
   email: string;
-  password: string;
-  password_confirmation: string;
+  password?: string;
+  password_confirmation?: string;
   document: string;
   birthdate: string;
   city: string;
