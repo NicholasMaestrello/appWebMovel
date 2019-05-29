@@ -34,7 +34,7 @@
     </div>
     <ion-item>
       <ion-label>CPF</ion-label>
-      <ion-input type="text" formControlName="document" maxlength="11"></ion-input>
+      <ion-input type="number" formControlName="document" maxlength="11"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Data de nascimento</ion-label>
@@ -43,7 +43,7 @@
     </ion-item>
     <ion-item>
       <ion-label>CEP</ion-label>
-      <ion-input type="text" formControlName="zipcode"></ion-input>
+      <ion-input type="number" formControlName="zipcode"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Estado</ion-label>
@@ -80,8 +80,10 @@
       <ion-input type="number" formControlName="cell_phone"></ion-input>
     </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!usuarioForm.valid">
-      Enviar
+      Salvar
     </button>
-    <span>{{usuarioForm.status}}</span>
+    <p *ngIf="usuarioForm.invalid" class="ion-text-center">
+      Todos os campos são obrigatorios.
+    </p>
   </form>
 </ion-content>

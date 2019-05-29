@@ -5,6 +5,8 @@ import {HttpClientProvider} from "../../providers/http-client/http-client";
 import {ResidenciaDTO} from "../../model/residencias";
 import {FilterPage} from "../filter/filter";
 import {Observable} from "rxjs";
+import {Storage} from "@ionic/storage";
+import {Filtro} from "../../model/filtro";
 
 @Component({
   selector: 'page-residencia-list',
@@ -15,6 +17,7 @@ export class ResidenciaListPage implements OnInit {
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              private storage: Storage,
               public httpClient: HttpClientProvider) {
   }
 
@@ -41,5 +44,11 @@ export class ResidenciaListPage implements OnInit {
 
   openFilter() {
     this.navCtrl.push(FilterPage);
+  }
+
+  refresh() {
+    this.storage.get('filtro').then((value: Filtro) => {
+      this.httpClient.atualizarFiltro(value)
+    })
   }
 }

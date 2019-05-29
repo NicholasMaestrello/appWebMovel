@@ -44,19 +44,19 @@ export class CadastroUsuarioPage implements OnInit {
   createForm() {
     this.usuarioForm = this.fb.group({
       name: [null, [Validators.required]],
-      username: [null],
-      email: [null],
-      document: [null],
-      birthdate: [null],
-      zipcode: [null],
-      state: [null],
-      city: [null],
-      neighborhood: [null],
-      street_name: [null],
-      street_number: [null],
-      apartment: [null],
-      telephone: [null],
-      cell_phone: [null]
+      username: [null, [Validators.required]],
+      email: [null, [Validators.required]],
+      document: [null, [Validators.required]],
+      birthdate: [null, [Validators.required]],
+      zipcode: [null, [Validators.required]],
+      state: [null, [Validators.required]],
+      city: [null, [Validators.required]],
+      neighborhood: [null, [Validators.required]],
+      street_name: [null, [Validators.required]],
+      street_number: [null, [Validators.required]],
+      apartment: [null, [Validators.required]],
+      telephone: [null, [Validators.required]],
+      cell_phone: [null, [Validators.required]]
     });
   }
 
@@ -93,8 +93,8 @@ export class CadastroUsuarioPage implements OnInit {
     if (!!novoUsuario) {
       this.novoUsuario = true;
       this.usuarioForm.addControl('senhaGroup', this.fb.group({
-          password: [null],
-          password_confirmation: [null]
+          password: [null, [Validators.required]],
+          password_confirmation: [null, [Validators.required]]
         }, {validator: Validators.compose([this.confirmarSenhaIgual()])}
       ))
     } else {
@@ -109,7 +109,7 @@ export class CadastroUsuarioPage implements OnInit {
     this.storage.get('userName').then((val: string) => {
       this.httpClient.getUser(val).subscribe(
         res => this.populateUserForm(res),
-        err => this.showError(err)
+        err => this.showError(err.error)
       )
     });
   }
@@ -156,7 +156,6 @@ export class CadastroUsuarioPage implements OnInit {
     }
 
     if (this.novoUsuario) {
-      console.log(formValue)
       user.password = formValue.senhaGroup.password;
       user.password_confirmation = formValue.senhaGroup.password_confirmation
     }
@@ -184,7 +183,7 @@ export class CadastroUsuarioPage implements OnInit {
       res => {
         this.loader.dismiss();
         this.viewCtrl.dismiss();
-      }, err => this.showError(err)
+      }, err => this.showError(err.error)
     )
   }
 
@@ -194,7 +193,7 @@ export class CadastroUsuarioPage implements OnInit {
       res => {
         this.loader.dismiss();
         this.getUser();
-      }, err => this.showError(err)
+      }, err => this.showError(err.error)
     )
   }
 
@@ -226,9 +225,8 @@ export class CadastroUsuarioPage implements OnInit {
   }
 
   showError(err) {
-    console.log(err);
     this.loader.dismiss();
-    const modal = this.modalCtrl.create(ErrorPage);
+    const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
   }
 }

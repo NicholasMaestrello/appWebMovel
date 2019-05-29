@@ -1,5 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Loading, LoadingController, ModalController, NavController, NavParams} from 'ionic-angular';
+import {
+  Loading,
+  LoadingController,
+  ModalController,
+  NavController,
+  NavParams,
+  Toast,
+  ToastController
+} from 'ionic-angular';
 import {CadastroUsuarioPage} from '../cadastro-usuario/cadastro-usuario';
 import {HomePage} from '../home/home';
 import {Storage} from '@ionic/storage';
@@ -7,6 +15,7 @@ import {HttpClientProvider} from '../../providers/http-client/http-client';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginDto} from "../../model/login.dto";
 import {ErrorPage} from "../error/error";
+import {Network} from "@ionic-native/network";
 
 @Component({
   selector: 'page-login',
@@ -15,6 +24,10 @@ import {ErrorPage} from "../error/error";
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
   loader: Loading;
+  toast: Toast;
+  disconnectSubscription: any;
+  connectSubscription: any;
+  isInternet = false;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -22,11 +35,14 @@ export class LoginPage implements OnInit {
               private fb: FormBuilder,
               private httpClient: HttpClientProvider,
               public modalCtrl: ModalController,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private toastCtrl: ToastController,
+              private network: Network) {
   }
 
   ngOnInit(): void {
     this.createForm();
+    this.checkNetwork();
   }
 
   createForm() {
@@ -40,13 +56,8 @@ export class LoginPage implements OnInit {
     this.showLoadingBar()
     const login = this.criarLoginDTO();
     this.httpClient.login(login).subscribe(
-      res => {
-        this.storage.set('authToken', res.token);
-        this.storage.set('userName', res.username);
-        this.httpClient.atualizarToken(res.token);
-        this.loader.dismiss();
-        this.navCtrl.setRoot(HomePage);
-      }, err => this.showError(err)
+      res => this.loginSucesso(res),
+      err => this.showError(err.error)
     )
   }
 
@@ -73,10 +84,17 @@ export class LoginPage implements OnInit {
     this.loader.present();
   }
 
-  showError(err) {
-    console.log(err);
+  loginSucesso(res: any) {
+    this.storage.set('authToken', res.token);
+    this.storage.set('userName', res.username);
+    this.httpClient.atualizarToken(res.token);
     this.loader.dismiss();
-    const modal = this.modalCtrl.create(ErrorPage);
+    this.navCtrl.setRoot(HomePage);
+  }
+
+  showError(err) {
+    this.loader.dismiss();
+    const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
   }
 
@@ -87,5 +105,24 @@ export class LoginPage implements OnInit {
 
   get senha(): AbstractControl {
     return this.loginForm.get('senha');
+  }
+
+  showToast(message: string) {
+    this.toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    this.toast.present();
+  }
+
+  checkNetwork() {
+    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      this.showToast('Sem conexão com a internet');
+    });
+
+    this.connectSubscription = this.network.onConnect().subscribe(() => {
+      this.toast.dismiss();
+      this.showToast('Conectado a rede movel');
+    });
   }
 }

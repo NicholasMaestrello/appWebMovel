@@ -3,6 +3,14 @@
     <ion-title>
       Filtro
     </ion-title>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end>
+      <button ion-button (click)="clear()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -75,9 +83,6 @@
     </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="filtrar()">
       Filtrar
-    </button>
-    <button ion-button class="submit-btn" full type="button" color="danger"  (click)="clear()">
-      Limpar Filtro
     </button>
   </form>
 </ion-content>

@@ -6,9 +6,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <h1>Ops, parece que algo deu errado</h1>
-  <h3>Tente novamente, caso o erro persista entre em contato com nossa equipe.</h3>
+<ion-content padding>
+  <h1 class="ion-text-center">Erro ao Executar Ação</h1>
+  <ion-item *ngFor="let err of erros">
+    <b>* {{err}}</b>
+  </ion-item>
+
   <ion-row>
     <ion-col>
       <button ion-button full type="button" (click)="dismiss()">

@@ -33,6 +33,7 @@ import {AgmCoreModule} from "@agm/core";
 import {LoadingProvider} from '../providers/loading/loading';
 // enviroment
 import {mapsConfig} from "../environments/environment";
+import {Network} from "@ionic-native/network";
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import {mapsConfig} from "../environments/environment";
     Geolocation,
     NativeGeocoder,
     HttpClientProvider,
-    LoadingProvider
+    LoadingProvider,
+    Network
   ]
 })
 export class AppModule {

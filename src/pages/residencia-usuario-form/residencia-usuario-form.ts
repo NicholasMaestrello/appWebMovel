@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Loading, LoadingController, ModalController, NavController, NavParams, ViewController} from 'ionic-angular';
 import {HttpClientProvider} from "../../providers/http-client/http-client";
-import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {ErrorPage} from "../error/error";
 import {ImovelDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
@@ -46,7 +46,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.loader.present();
     this.httpClient.getImoveisUsuarioDetalhe(idResidencia).subscribe(
       res => this.preencherFormulario(res),
-      err => this.showError(err)
+      err => this.showError(err.error)
     );
   }
 
@@ -54,26 +54,26 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.residenciaForm = this.fb.group({
       id: [null],
       username: [null],
-      kind: [null],
-      for_sale: [null],
-      for_rent: [null],
+      kind: [null, [Validators.required]],
+      for_sale: [false, [Validators.required]],
+      for_rent: [false, [Validators.required]],
       latitude: [null],
       longitude: [null],
       sell_price: [null],
       rent_price: [null],
-      area: [null],
-      number_of_rooms: [null],
-      number_of_parking_lots: [null],
-      number_of_bathrooms: [null],
+      area: [null, [Validators.required]],
+      number_of_rooms: [null, [Validators.required]],
+      number_of_parking_lots: [null, [Validators.required]],
+      number_of_bathrooms: [null, [Validators.required]],
       address: this.fb.group({
         id: [null],
-        zipcode: [null],
-        state: [null],
-        city: [null],
-        neighborhood: [null],
-        street_name: [null],
-        street_number: [null],
-        apartment: [null]
+        zipcode: [null, [Validators.required]],
+        state: [null, [Validators.required]],
+        city: [null, [Validators.required]],
+        neighborhood: [null, [Validators.required]],
+        street_name: [null, [Validators.required]],
+        street_number: [null, [Validators.required]],
+        apartment: [null, [Validators.required]]
       })
     });
   }
@@ -102,7 +102,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         if (state && city && neighborhood && street_name && street_number) {
           this.httpClient.getLatLongAddress(state, city, neighborhood, street_name, street_number).subscribe(
             res => this.resolveLatLong(res),
-            err => this.showError(err)
+            err => this.showError(err.error)
           );
         }
       }
@@ -121,12 +121,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     const imovel: ImovelDTO = {
       property: {
         kind: formValue.kind,
-        for_sale: formValue.for_sale,
-        for_rent: formValue.for_rent,
         latitude: formValue.latitude,
         longitude: formValue.longitude,
-        sell_price: formValue.sell_price,
-        rent_price: formValue.rent_price,
         area: formValue.area,
         username: this.user,
         number_of_rooms: formValue.number_of_rooms,
@@ -149,6 +145,14 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     if (formValue.address && formValue.address.id) {
       imovel.property.address.id = formValue.address.id;
     }
+    if (formValue.for_sale) {
+      imovel.property.for_sale = formValue.for_sale;
+      imovel.property.sell_price = formValue.sell_price;
+    }
+    if (formValue.for_rent) {
+      imovel.property.for_rent = formValue.for_rent;
+      imovel.property.rent_price = formValue.rent_price;
+    }
     return imovel;
   }
 
@@ -169,7 +173,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         this.loader.dismiss();
         this.viewCtrl.dismiss();
       },
-      err => this.showError(err)
+      err => this.showError(err.error)
     )
   }
 
@@ -180,7 +184,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         this.loader.dismiss();
         this.viewCtrl.dismiss();
       },
-      err => this.showError(err)
+      err => this.showError(err.error)
     )
   }
 
@@ -226,9 +230,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   }
 
   showError(err) {
-    console.log(err);
     this.loader.dismiss();
-    const modal = this.modalCtrl.create(ErrorPage);
+    const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
   }
 
