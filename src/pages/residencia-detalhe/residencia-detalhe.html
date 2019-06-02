@@ -60,12 +60,12 @@
   </ion-item-group>
   <ion-item-group class="item-group">
     <ion-item-divider color="light">
-      <ion-icon class="ion-icon-down" name="person"></ion-icon>
+      <ion-icon name="images"></ion-icon>
       <div>
-        <b>INFORMAÇÕES DO PROPRIETÁRIO</b>
+        <b>Fotos</b>
       </div>
     </ion-item-divider>
-    <ion-item *ngFor="let image of residencia.images; let i = index">
+    <ion-item *ngFor="let image of residencia?.images; let i = index">
       <img [src]="image[0]" alt="Select Image"/>
     </ion-item>
   </ion-item-group>
