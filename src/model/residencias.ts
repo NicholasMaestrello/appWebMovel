@@ -37,6 +37,7 @@ export class ResidenciaDTO {
   number_of_parking_lots?: number;
   number_of_bathrooms?: number;
   address: AddressDTO;
+  images?: any[];
 }
 
 export class AddressDTO {
