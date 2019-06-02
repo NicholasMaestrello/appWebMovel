@@ -125,6 +125,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         longitude: formValue.longitude,
         area: formValue.area,
         username: this.user,
+        sell_price: 0,
+        rent_price: 0,
         number_of_rooms: formValue.number_of_rooms,
         number_of_parking_lots: formValue.number_of_parking_lots,
         number_of_bathrooms: formValue.number_of_bathrooms,

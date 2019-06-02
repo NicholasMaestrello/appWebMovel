@@ -8,7 +8,7 @@
     </button>
     <ion-buttons end>
       <button ion-button (click)="clear()">
-        <ion-icon name="trash"></ion-icon>
+        Limpar
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -81,7 +81,7 @@
       <ion-label>Rua</ion-label>
       <ion-input type="text" formControlName="street"></ion-input>
     </ion-item>
-    <button ion-button class="submit-btn" full type="button" (click)="filtrar()">
+    <button ion-button class="submit-btn" full type="button" (click)="filtrar(true)">
       Filtrar
     </button>
   </form>

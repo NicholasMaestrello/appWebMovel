@@ -28,10 +28,12 @@ export class FilterPage implements OnInit {
     this.getFiltroMemory();
   }
 
-  filtrar() {
+  filtrar(dissmis: boolean) {
     this.httpClient.atualizarFiltro(this.filterForm.value);
     this.storage.set('filtro', this.filterForm.value);
-    this.viewCtrl.dismiss();
+    if(dissmis) {
+      this.viewCtrl.dismiss();
+    }
   }
 
   private getEstados() {
@@ -67,6 +69,6 @@ export class FilterPage implements OnInit {
 
   clear() {
     this.filterForm.reset();
-    this.filtrar();
+    this.filtrar(false);
   }
 }
