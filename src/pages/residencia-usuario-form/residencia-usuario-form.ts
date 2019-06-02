@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 import {ErrorPage} from "../error/error";
 import {ImovelDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
 import {Storage} from "@ionic/storage";
+import {ImagePicker, ImagePickerOptions} from "@ionic-native/image-picker";
 
 @Component({
   selector: 'page-residencia-usuario-form',
@@ -16,7 +17,9 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   estados$: Observable<any>;
   newResidencia = true;
   user = '';
-  loader: Loading;
+
+  //TODO remover
+  images: any[] = [];
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -25,8 +28,11 @@ export class ResidenciaUsuarioFormPage implements OnInit {
               public viewCtrl: ViewController,
               private storage: Storage,
               public modalCtrl: ModalController,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private imagePicker: ImagePicker) {
   }
+
+  loader: Loading;
 
   ngOnInit(): void {
     const idImovel = this.navParams.data.item;
@@ -155,6 +161,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
       imovel.property.for_rent = formValue.for_rent;
       imovel.property.rent_price = formValue.rent_price;
     }
+
+    imovel.property.images = this.images;
     return imovel;
   }
 
@@ -241,5 +249,29 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
+  }
+
+  showImagePicker() {
+    const options: ImagePickerOptions = {
+      maximumImagesCount: 5,
+      outputType: 1,
+      width: 100,
+      height: 100,
+    }
+    this.imagePicker.getPictures(options).then((results) => {
+      if (results.length > 0) {
+        this.images = [];
+        for (var i = 0; i < results.length; i++) {
+          const base64Data = results[i];
+          this.images.push(["data:image/jpeg;base64", base64Data]);
+        }
+      }
+    }, (err) => {
+      this.showError(err)
+    });
+  }
+
+  removeImage(index: number) {
+    this.images.splice(index, 1);
   }
 }

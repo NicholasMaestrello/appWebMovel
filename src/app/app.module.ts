@@ -1,6 +1,6 @@
 // angular
 import {BrowserModule} from '@angular/platform-browser';
-import {ErrorHandler, NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 // ionic
@@ -12,6 +12,8 @@ import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import {Geolocation} from '@ionic-native/geolocation';
 import {NativeGeocoder} from "@ionic-native/native-geocoder";
+import {Network} from "@ionic-native/network";
+import {ImagePicker} from "@ionic-native/image-picker";
 // Pages
 import {MapaPage} from '../pages/mapa/mapa';
 import {CadastroUsuarioPage} from '../pages/cadastro-usuario/cadastro-usuario';
@@ -33,7 +35,6 @@ import {AgmCoreModule} from "@agm/core";
 import {LoadingProvider} from '../providers/loading/loading';
 // enviroment
 import {mapsConfig} from "../environments/environment";
-import {Network} from "@ionic-native/network";
 
 @NgModule({
   declarations: [
@@ -86,8 +87,10 @@ import {Network} from "@ionic-native/network";
     NativeGeocoder,
     HttpClientProvider,
     LoadingProvider,
-    Network
-  ]
+    Network,
+    ImagePicker
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {
 }

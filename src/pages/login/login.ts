@@ -118,9 +118,11 @@ export class LoginPage implements OnInit {
   checkNetwork() {
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       this.showToast('Sem conexão com a internet');
+      this.isInternet = false;
     });
 
     this.connectSubscription = this.network.onConnect().subscribe(() => {
+      this.isInternet = true;
       this.toast.dismiss();
       this.showToast('Conectado a rede movel');
     });

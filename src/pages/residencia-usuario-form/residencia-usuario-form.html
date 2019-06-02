@@ -77,6 +77,15 @@
       <ion-label>Vagas de Garagem</ion-label>
       <ion-input formControlName="number_of_parking_lots" type="number"></ion-input>
     </ion-item>
+    <ion-item>
+      <button ion-button type="button" (click)="showImagePicker()">Selecionar Imagens</button>
+    </ion-item>
+    <ion-item *ngFor="let image of images; let i = index">
+      <button ion-button color="danger" (click)="removeImage(i)">
+        <ion-icon name="close"></ion-icon>
+      </button>
+      <img  [src]="image[0] + ',' + image[1]"  alt="Select Image"/>
+    </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!residenciaForm.valid">
       Salvar
     </button>
