@@ -54,7 +54,7 @@ export class CadastroUsuarioPage implements OnInit {
       neighborhood: [null, [Validators.required]],
       street_name: [null, [Validators.required]],
       street_number: [null, [Validators.required]],
-      apartment: [null, [Validators.required]],
+      apartment: [null],
       telephone: [null, [Validators.required]],
       cell_phone: [null, [Validators.required]]
     });

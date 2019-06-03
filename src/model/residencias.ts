@@ -11,8 +11,8 @@ export class ResidenciaUsuarioDTO {
   for_rent?: boolean;
   latitude?: number;
   longitude?: number;
-  sell_price?: number;
-  rent_price?: number;
+  sell_price?: number | string;
+  rent_price?: number | string;
   area?: number;
   username?: string;
   number_of_rooms?: number;
@@ -29,8 +29,8 @@ export class ResidenciaDTO {
   for_rent: boolean;
   latitude: string;
   longitude: string;
-  sell_price: string;
-  rent_price: string;
+  sell_price: string | string;
+  rent_price: string | string;
   area: string;
   user?: User;
   number_of_rooms?: number;

@@ -79,7 +79,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
         neighborhood: [null, [Validators.required]],
         street_name: [null, [Validators.required]],
         street_number: [null, [Validators.required]],
-        apartment: [null, [Validators.required]]
+        apartment: [null]
       })
     });
   }
@@ -199,6 +199,12 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   }
 
   preencherFormulario(imovel: ResidenciaUsuarioDTO) {
+    if (imovel.rent_price == '0.0') {
+      imovel.rent_price = null;
+    }
+    if (imovel.sell_price == '0.0') {
+      imovel.sell_price = null;
+    }
     this.residenciaForm.patchValue(imovel);
     this.loader.dismiss();
   }

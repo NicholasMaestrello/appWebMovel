@@ -84,7 +84,7 @@
       <button ion-button color="danger" (click)="removeImage(i)">
         <ion-icon name="close"></ion-icon>
       </button>
-      <img  [src]="image[0] + ',' + image[1]"  alt="Select Image"/>
+      <img [src]="image[0] + ',' + image[1]" alt="Select Image"/>
     </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!residenciaForm.valid">
       Salvar
