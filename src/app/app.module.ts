@@ -1,6 +1,6 @@
 // angular
 import {BrowserModule} from '@angular/platform-browser';
-import {CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 // ionic
@@ -89,8 +89,7 @@ import {mapsConfig} from "../environments/environment";
     LoadingProvider,
     Network,
     ImagePicker
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  ]
 })
 export class AppModule {
 }
