@@ -10,61 +10,61 @@
 <ion-content padding>
   <form [formGroup]="usuarioForm">
     <ion-item>
-      <ion-label>Nome</ion-label>
+      <ion-label>* Nome</ion-label>
       <ion-input type="text" formControlName="name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Nome de Usuario</ion-label>
+      <ion-label>* Nome de Usuario</ion-label>
       <ion-input type="text" formControlName="username"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Email</ion-label>
+      <ion-label>* Email</ion-label>
       <ion-input type="text" formControlName="email"></ion-input>
     </ion-item>
     <div *ngIf="novoUsuario" formGroupName="senhaGroup">
       <ion-item>
-        <ion-label>Senha</ion-label>
+        <ion-label>* Senha</ion-label>
         <ion-input type="password" formControlName="password"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Confirme sua Senha</ion-label>
+        <ion-label>* Confirme sua Senha</ion-label>
         <ion-input type="password" formControlName="password_confirmation"
         ></ion-input>
       </ion-item>
     </div>
     <ion-item>
-      <ion-label>CPF</ion-label>
+      <ion-label>* CPF</ion-label>
       <ion-input type="number" formControlName="document" maxlength="11"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Data de nascimento</ion-label>
+      <ion-label>* Data de nascimento</ion-label>
       <ion-datetime formControlName="birthdate" displayFormat="DD/MMM/YYYY" pickerFormat="DD/MMM/YYYY"
       ></ion-datetime>
     </ion-item>
     <ion-item>
-      <ion-label>CEP</ion-label>
+      <ion-label>* CEP</ion-label>
       <ion-input type="number" formControlName="zipcode"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Estado</ion-label>
+      <ion-label>* Estado</ion-label>
       <ion-select formControlName="state">
         <ion-option *ngFor="let estado of estados$ | async" [value]="estado.sigla">{{estado.sigla}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>Cidade</ion-label>
+      <ion-label>* Cidade</ion-label>
       <ion-input type="text" formControlName="city"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Bairro</ion-label>
+      <ion-label>* Bairro</ion-label>
       <ion-input type="text" formControlName="neighborhood"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Rua</ion-label>
+      <ion-label>* Rua</ion-label>
       <ion-input type="text" formControlName="street_name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Numero</ion-label>
+      <ion-label>* Numero</ion-label>
       <ion-input type="number" formControlName="street_number"></ion-input>
     </ion-item>
     <ion-item>
@@ -72,18 +72,18 @@
       <ion-input type="text" formControlName="apartment"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Telefone</ion-label>
+      <ion-label>* Telefone</ion-label>
       <ion-input type="number" formControlName="telephone"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Celular</ion-label>
+      <ion-label>* Celular</ion-label>
       <ion-input type="number" formControlName="cell_phone"></ion-input>
     </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!usuarioForm.valid">
       Salvar
     </button>
     <p *ngIf="usuarioForm.invalid" class="ion-text-center">
-      Todos os campos são obrigatorios.
+      Campos com (*) São obrigatorios.
     </p>
   </form>
 </ion-content>

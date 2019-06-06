@@ -31,29 +31,29 @@
     </ion-item>
     <div formGroupName="address">
       <ion-item>
-        <ion-label>CEP</ion-label>
+        <ion-label>* CEP</ion-label>
         <ion-input formControlName="zipcode" type="number"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Estado</ion-label>
+        <ion-label>* Estado</ion-label>
         <ion-select formControlName="state">
           <ion-option *ngFor="let estado of estados$ | async" [value]="estado.sigla">{{estado.sigla}}</ion-option>
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-label>Cidade</ion-label>
+        <ion-label>* Cidade</ion-label>
         <ion-input formControlName="city" type="text"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Bairro</ion-label>
+        <ion-label>* Bairro</ion-label>
         <ion-input formControlName="neighborhood" type="text"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Rua</ion-label>
+        <ion-label>* Rua</ion-label>
         <ion-input formControlName="street_name" type="text"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Numero</ion-label>
+        <ion-label>* Numero</ion-label>
         <ion-input formControlName="street_number" type="number"></ion-input>
       </ion-item>
       <ion-item>
@@ -62,20 +62,26 @@
       </ion-item>
     </div>
     <ion-item>
-      <ion-label>Área (m²)</ion-label>
+      <ion-label>* Área (m²)</ion-label>
       <ion-input formControlName="area" type="number"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Número de Quartos</ion-label>
+      <ion-label>* Número de Quartos</ion-label>
       <ion-input formControlName="number_of_rooms" type="number"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Número de Banheiros</ion-label>
+      <ion-label>* Número de Banheiros</ion-label>
       <ion-input formControlName="number_of_bathrooms" type="number"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Vagas de Garagem</ion-label>
+      <ion-label>* Vagas de Garagem</ion-label>
       <ion-input formControlName="number_of_parking_lots" type="number"></ion-input>
     </ion-item>
+    <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!residenciaForm.valid">
+      Salvar
+    </button>
+    <p *ngIf="residenciaForm.invalid" class="ion-text-center">
+      Campos com (*) São obrigatorios.
+    </p>
   </form>
 </ion-content>
