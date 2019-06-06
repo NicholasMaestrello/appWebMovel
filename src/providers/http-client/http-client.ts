@@ -126,6 +126,17 @@ export class HttpClientProvider {
     return this.http.delete<any>(`${this.urlApiWebMovel}properties/${idResidencia}`, authHeader);
   }
 
+  public postImageImovel(idImovel: number, image: any): Observable<ResidenciaUsuarioDTO> {
+    let authHeader = this.getAuthHeader();
+    console.log(idImovel)
+    return this.http.post<ResidenciaUsuarioDTO>(`${this.urlApiWebMovel}properties/${idImovel}/images`, image, authHeader)
+  }
+
+  public deleteImageImovel(idImovel: number, filename: string): Observable<ResidenciaUsuarioDTO> {
+    let authHeader = this.getAuthHeader();
+    return this.http.delete<ResidenciaUsuarioDTO>(`${this.urlApiWebMovel}properties/${idImovel}/images/${filename}`, authHeader)
+  }
+
   private resolveParamsPesquisa(filtro: Filtro): HttpParams {
     let params = new HttpParams();
     if (!filtro)

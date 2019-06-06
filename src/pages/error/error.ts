@@ -12,9 +12,11 @@ export class ErrorPage {
               public navParams: NavParams,
               public viewCtrl: ViewController) {
     let err = navParams.get('err');
-    if(err && err.errors && Array.isArray(err.errors)) {
+    if (err && err.errors && Array.isArray(err.errors)) {
       this.erros = err.errors;
-    } else if(err && err.error) {
+    } else if (err && err.errors) {
+      this.erros = [err.errors];
+    } else if (err && err.error) {
       this.erros = [err.error];
     }
   }

@@ -27,6 +27,7 @@ import {ResidenciaUsuarioFormPage} from '../pages/residencia-usuario-form/reside
 import {AboutPage} from '../pages/about/about';
 import {ErrorPage} from '../pages/error/error';
 import {FilterPage} from "../pages/filter/filter";
+import {ResidenciaUsuarioPhotoPage} from "../pages/residencia-usuario-photo/residencia-usuario-photo";
 // Providers
 import {HttpClientProvider} from '../providers/http-client/http-client';
 // components
@@ -50,7 +51,8 @@ import {mapsConfig} from "../environments/environment";
     ResidenciaUsuarioFormPage,
     AboutPage,
     ErrorPage,
-    FilterPage
+    FilterPage,
+    ResidenciaUsuarioPhotoPage
   ],
   imports: [
     AgmCoreModule.forRoot(mapsConfig),
@@ -77,7 +79,8 @@ import {mapsConfig} from "../environments/environment";
     ResidenciaUsuarioFormPage,
     AboutPage,
     ErrorPage,
-    FilterPage
+    FilterPage,
+    ResidenciaUsuarioPhotoPage
   ],
   providers: [
     StatusBar,

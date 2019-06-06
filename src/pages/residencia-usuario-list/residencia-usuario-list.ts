@@ -5,6 +5,7 @@ import {Storage} from "@ionic/storage";
 import {ResidenciaUsuarioDTO} from "../../model/residencias";
 import {ErrorPage} from "../error/error";
 import {HttpClientProvider} from "../../providers/http-client/http-client";
+import {ResidenciaUsuarioPhotoPage} from "../residencia-usuario-photo/residencia-usuario-photo";
 
 @Component({
   selector: 'page-residencia-usuario-list',
@@ -94,5 +95,11 @@ export class ResidenciaUsuarioListPage implements OnInit {
       ]
     });
     prompt.present();
+  }
+
+  fotos(imovel: ResidenciaUsuarioDTO) {
+    this.navCtrl.push(ResidenciaUsuarioPhotoPage, {
+      item: imovel.id
+    });
   }
 }
