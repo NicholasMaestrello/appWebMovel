@@ -19,7 +19,8 @@
     </ion-item>
     <ion-item>
       <ion-label>Preço para venda</ion-label>
-      <ion-input formControlName="sell_price" type="number"></ion-input>
+      <ion-input formControlName="sell_price" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Aluguel ?</ion-label>
@@ -27,12 +28,13 @@
     </ion-item>
     <ion-item>
       <ion-label>Preço para Aluguel</ion-label>
-      <ion-input formControlName="rent_price" type="number"></ion-input>
+      <ion-input formControlName="rent_price" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <div formGroupName="address">
       <ion-item>
         <ion-label>* CEP</ion-label>
-        <ion-input formControlName="zipcode" type="number"></ion-input>
+        <ion-input formControlName="zipcode" type="text" [brmasker]="{mask:'00000-000', len:9}"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>* Estado</ion-label>

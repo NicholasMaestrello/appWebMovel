@@ -15,10 +15,10 @@
         <b>{{residencia?.kind == 'house' ? 'Casa' : 'Apartamento'}}</b>
       </h3>
       <h3>
-        <b *ngIf="residencia?.for_sale">Preço para Compra: R${{residencia?.sell_price}}</b>
+        <b *ngIf="residencia?.for_sale">Preço para Compra: R${{residencia?.sell_price | currency :'BRL'}}</b>
       </h3>
       <h3>
-        <b *ngIf="residencia?.for_rent">Preço para Aluguel: R${{residencia?.rent_price}}</b>
+        <b *ngIf="residencia?.for_rent">Preço para Aluguel: R${{residencia?.rent_price | currency :'BRL'}}</b>
       </h3>
     </ion-card-header>
   </ion-card>
@@ -56,7 +56,7 @@
     <ion-item>
       <b>E-mail:</b> {{residencia?.user?.email}}</ion-item>
     <ion-item>
-      <b>Telefone:</b> {{residencia?.user?.telephone}}</ion-item>
+      <b>Telefone:</b> {{residencia?.user?.telephone | mask: '(00) 0000-0000'}}</ion-item>
   </ion-item-group>
   <ion-item-group class="item-group">
     <ion-item-divider color="light">

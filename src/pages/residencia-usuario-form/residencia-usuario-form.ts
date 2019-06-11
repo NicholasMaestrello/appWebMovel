@@ -85,8 +85,8 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   createFormSubscribe() {
     this.zipcode.valueChanges.subscribe(
       r => {
-        if (r && r.length == 8) {
-          this.httpClient.getCep(r).subscribe(
+        if (r && r.length == 9) {
+          this.httpClient.getCep(this.justDigitsValue(r)).subscribe(
             res => this.cepResponse(res)
           )
         }
@@ -137,7 +137,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
           street_number: formValue.address.street_number,
           apartment: formValue.address.apartment,
           neighborhood: formValue.address.neighborhood,
-          zipcode: formValue.address.zipcode
+          zipcode: this.justDigitsValue(formValue.address.zipcode)
         }
       }
     };
@@ -149,11 +149,11 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
     if (formValue.for_sale) {
       imovel.property.for_sale = formValue.for_sale;
-      imovel.property.sell_price = formValue.sell_price;
+      imovel.property.sell_price = this.numberValue(formValue.sell_price);
     }
     if (formValue.for_rent) {
       imovel.property.for_rent = formValue.for_rent;
-      imovel.property.rent_price = formValue.rent_price;
+      imovel.property.rent_price = this.numberValue(formValue.rent_price);
     }
     return imovel;
   }
@@ -193,9 +193,15 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   preencherFormulario(imovel: ResidenciaUsuarioDTO) {
     if (imovel.rent_price == '0.0') {
       imovel.rent_price = null;
+      // @ts-ignore
+    } else if (imovel.rent_price.split('.')[1].length == 1) {
+      imovel.rent_price += '0';
     }
     if (imovel.sell_price == '0.0') {
       imovel.sell_price = null;
+      // @ts-ignore
+    } else if (imovel.sell_price.split('.')[1].length == 1) {
+      imovel.sell_price += '0';
     }
     this.residenciaForm.patchValue(imovel);
     this.loader.dismiss();
@@ -247,5 +253,15 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
+  }
+
+  justDigitsValue(value: string = ''): string {
+    if (!value) return '';
+    return value.replace(/[^0-9]/g, '');
+  }
+
+  numberValue(value: string = ''): number {
+    if (!value) return 0;
+    return Number(value.replace(/\./g, '').replace(/\,/, '.'));
   }
 }

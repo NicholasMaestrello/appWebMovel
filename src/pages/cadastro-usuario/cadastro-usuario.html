@@ -34,7 +34,7 @@
     </div>
     <ion-item>
       <ion-label>* CPF</ion-label>
-      <ion-input type="number" formControlName="document" maxlength="11"></ion-input>
+      <ion-input type="text" formControlName="document" [brmasker]="{mask:'000.000.000-00', len:14}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>* Data de nascimento</ion-label>
@@ -43,7 +43,7 @@
     </ion-item>
     <ion-item>
       <ion-label>* CEP</ion-label>
-      <ion-input type="number" formControlName="zipcode"></ion-input>
+      <ion-input type="text" formControlName="zipcode" [brmasker]="{mask:'00000-000', len:9}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>* Estado</ion-label>
@@ -73,11 +73,11 @@
     </ion-item>
     <ion-item>
       <ion-label>* Telefone</ion-label>
-      <ion-input type="number" formControlName="telephone"></ion-input>
+      <ion-input type="text" formControlName="telephone" [brmasker]="{phone: true}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>* Celular</ion-label>
-      <ion-input type="number" formControlName="cell_phone"></ion-input>
+      <ion-input type="text" formControlName="cell_phone" [brmasker]="{phone: true}"></ion-input>
     </ion-item>
     <button ion-button class="submit-btn" full type="button" (click)="salvar()" [disabled]="!usuarioForm.valid">
       Salvar

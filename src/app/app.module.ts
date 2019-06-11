@@ -1,8 +1,10 @@
 // angular
 import {BrowserModule} from '@angular/platform-browser';
-import {ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import localePtBr from '@angular/common/locales/pt';
+import {registerLocaleData} from "@angular/common";
 // ionic
 import {IonicStorageModule} from '@ionic/storage';
 // ionic-anguar
@@ -37,6 +39,12 @@ import {LoadingProvider} from '../providers/loading/loading';
 // enviroment
 import {mapsConfig} from "../environments/environment";
 
+// terceiros
+import {NgxMaskModule} from "ngx-mask";
+import {BrMaskerModule} from "brmasker-ionic-3";
+
+registerLocaleData(localePtBr, 'pt');
+
 @NgModule({
   declarations: [
     MyApp,
@@ -60,6 +68,8 @@ import {mapsConfig} from "../environments/environment";
     IonicModule.forRoot(MyApp),
     HttpClientModule,
     ReactiveFormsModule,
+    BrMaskerModule,
+    NgxMaskModule.forRoot(),
     IonicStorageModule.forRoot({
       name: '__appdb',
       driverOrder: ['indexeddb', 'sqlite', 'websql']
@@ -86,6 +96,7 @@ import {mapsConfig} from "../environments/environment";
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {provide: LOCALE_ID, useValue: 'pt-BR'},
     Geolocation,
     NativeGeocoder,
     HttpClientProvider,

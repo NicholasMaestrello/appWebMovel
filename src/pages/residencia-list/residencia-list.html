@@ -28,8 +28,8 @@
   <ion-card class="card" ion-item *ngFor="let item of imoveis$ | async">
     <ion-card-content>
       <div>Tipo de imovel: {{item?.kind == 'house' ? 'Casa' : 'Apartamento' }}</div>
-      <div *ngIf="item.for_sale">Preço para venda: {{item.sell_price}}</div>
-      <div *ngIf="item.for_rent">Preço do Aluguel: {{item.rent_price}}</div>
+      <div *ngIf="item.for_sale">Preço para venda: {{item.sell_price | currency :'BRL'}}</div>
+      <div *ngIf="item.for_rent">Preço do Aluguel: {{item.rent_price | currency :'BRL'}}</div>
     </ion-card-content>
     <ion-row no-padding>
       <ion-col>

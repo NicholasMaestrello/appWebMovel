@@ -63,8 +63,8 @@ export class CadastroUsuarioPage implements OnInit {
   createFormSubscribe() {
     this.cep.valueChanges.subscribe(
       r => {
-        if (r && r.length == 8) {
-          this.httpClient.getCep(r).subscribe(
+        if (r && r.length == 9) {
+          this.httpClient.getCep(this.justDigitsValue(r)).subscribe(
             res => this.cepResponse(res)
           )
         }
@@ -142,7 +142,7 @@ export class CadastroUsuarioPage implements OnInit {
       name: formValue.name,
       username: formValue.username,
       email: formValue.email,
-      document: formValue.document,
+      document: this.justDigitsValue(formValue.document),
       birthdate: formValue.birthdate,
       zipcode: formValue.zipcode,
       state: formValue.state,
@@ -151,8 +151,8 @@ export class CadastroUsuarioPage implements OnInit {
       street_name: formValue.street_name,
       street_number: formValue.street_number,
       apartment: formValue.apartment,
-      telephone: formValue.telephone,
-      cell_phone: formValue.cell_phone
+      telephone: this.justDigitsValue(formValue.telephone),
+      cell_phone: this.justDigitsValue(formValue.cell_phone)
     }
 
     if (this.novoUsuario) {
@@ -228,5 +228,10 @@ export class CadastroUsuarioPage implements OnInit {
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
+  }
+
+  justDigitsValue(value: string = ''): string {
+    if(!value) return '';
+    return value.replace(/[^0-9]/g, '');
   }
 }

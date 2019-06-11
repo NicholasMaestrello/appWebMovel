@@ -32,6 +32,7 @@
     "@ionic-native/splash-screen": "~4.18.0",
     "@ionic-native/status-bar": "~4.18.0",
     "@ionic/storage": "^2.2.0",
+    "brmasker-ionic-3": "^1.6.3",
     "cordova-android": "8.0.0",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-geolocation": "4.0.1",
@@ -40,6 +41,7 @@
     "cordova-sqlite-storage": "3.2.0",
     "ionic-angular": "3.9.3",
     "ionicons": "3.0.0",
+    "ngx-mask": "^7.9.9",
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.29"
