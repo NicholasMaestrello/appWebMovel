@@ -1,3 +1,6 @@
+/**
+ * classe de login utilizado como body para requisição HTTP
+ */
 export class LoginDto {
   login: {
     email: string;
@@ -5,6 +8,9 @@ export class LoginDto {
   }
 }
 
+/**
+ * Classe utilizada na resposta do login
+ */
 export class LoginRes {
   token: string;
   exp: string;

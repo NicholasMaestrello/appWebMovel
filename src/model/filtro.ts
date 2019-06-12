@@ -1,3 +1,6 @@
+/**
+ * Classe de filtro
+ */
 export class Filtro {
   min_sell_value?: number;
   max_sell_value?: number;

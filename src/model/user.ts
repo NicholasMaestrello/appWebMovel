@@ -1,7 +1,11 @@
+/**
+ * Classe utilizada como body da requisição de criação e edição do usuario
+ */
 export class UserDTO {
   user: User;
 }
 
+// Classe contendo as informações padrões do usuario
 export class User {
   name: string;
   username: string;

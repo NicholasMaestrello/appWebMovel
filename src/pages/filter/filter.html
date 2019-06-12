@@ -28,24 +28,28 @@
       <ion-checkbox formControlName="for_rent"></ion-checkbox>
     </ion-item>
     <ion-item>
-      <ion-label>Aluguel Minimo</ion-label>
-      <ion-input type="number" formControlName="min_rent_value"></ion-input>
+      <ion-label>Aluguel Mínimo</ion-label>
+      <ion-input formControlName="min_rent_value" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Aluguel Maximo</ion-label>
-      <ion-input type="number" formControlName="max_rent_value"></ion-input>
+      <ion-label>Aluguel Máximo</ion-label>
+      <ion-input formControlName="max_rent_value" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Comprar ?</ion-label>
       <ion-checkbox formControlName="for_sale"></ion-checkbox>
     </ion-item>
     <ion-item>
-      <ion-label>Compra Minimo</ion-label>
-      <ion-input type="number" formControlName="min_sell_value"></ion-input>
+      <ion-label>Compra Mínimo</ion-label>
+      <ion-input formControlName="min_sell_value" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Maximo</ion-label>
-      <ion-input type="number" formControlName="max_sell_value"></ion-input>
+      <ion-label>Compra Máximo</ion-label>
+      <ion-input formControlName="max_sell_value" type="text"
+                 [brmasker]="{money: true,  thousand: '.', decimalCaracter: ',', decimal: 2, len:16}"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Área (m²)</ion-label>

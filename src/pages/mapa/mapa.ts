@@ -17,29 +17,48 @@ export class MapaPage implements OnInit {
   latUsuario = -21.763409;
   lngUsuario = -43.349034;
 
+  /**
+   * Construtor padrão com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param httpClient
+   * @param geolocation
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private httpClient: HttpClientProvider,
               private geolocation: Geolocation) {
   }
 
+  /**
+   * Primeiro metodo a ser chamado pela aplicação
+   */
   ngOnInit(): void {
     this.buscarImovelGambs();
     this.buscarImoveis();
     this.getLocation();
   }
 
-  buscarImovelGambs() {
+  /**
+   * Metodo para setar o obsercable com os imoveis
+   */
+  buscarImovelGambs(): void {
     this.imoveis$ = this.httpClient.getImoveisFiltrados(null);
   }
 
+  /**
+   * Metodo que faz a busca dos imoveis
+   */
   buscarImoveis() {
     this.httpClient.filtro.subscribe(value => {
       this.imoveis$ = this.httpClient.getImoveisFiltrados(value);
     })
   }
 
-
+  /**
+   * Metodo que chama a pagina de detalhes do imovel
+   * @param imovel
+   */
   showDetalhe(imovel: ResidenciaDTO) {
     // navegando para pagina de detalhes da residencia
     this.navCtrl.push(ResidenciaDetalhePage, {
@@ -59,10 +78,16 @@ export class MapaPage implements OnInit {
     // TODO fazer algo
   }
 
+  /**
+   * Metodo para chamar a pagina de filtro
+   */
   openFilter() {
     this.navCtrl.push(FilterPage);
   }
 
+  /**
+   * MEtodo para pegar a localização atual do usuario
+   */
   getLocation() {
     this.geolocation.getCurrentPosition().then(
       pos => {

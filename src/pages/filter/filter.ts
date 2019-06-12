@@ -5,7 +5,11 @@ import {Observable} from "rxjs";
 import {Storage} from "@ionic/storage";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Filtro} from "../../model/filtro";
+import {MaskConverter} from "../../shared/helper/mask-converter";
 
+/**
+ * Componente de filtro de imoveis
+ */
 @Component({
   selector: 'page-filter',
   templateUrl: 'filter.html',
@@ -14,6 +18,15 @@ export class FilterPage implements OnInit {
   estados$: Observable<any>;
   filterForm: FormGroup;
 
+  /**
+   * Construtor padrão com serviços a serem injetados
+   * @param navCtrl
+   * @param navParams
+   * @param httpClient
+   * @param storage
+   * @param viewCtrl
+   * @param fb
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private httpClient: HttpClientProvider,
@@ -22,25 +35,38 @@ export class FilterPage implements OnInit {
               private fb: FormBuilder) {
   }
 
+  /**
+   * Metodo chamado apos a criação do componente para iniciar certos comportamentos
+   */
   ngOnInit(): void {
     this.estados$ = this.getEstados();
     this.createForm();
     this.getFiltroMemory();
   }
 
-  filtrar(dissmis: boolean) {
-    this.httpClient.atualizarFiltro(this.filterForm.value);
+  /**
+   * Metodo que chama a atualização do filtro
+   * @param dissmis
+   */
+  filtrar(dissmis: boolean): void {
+    this.atualizarFiltro(this.filterForm.value);
     this.storage.set('filtro', this.filterForm.value);
     if(dissmis) {
       this.viewCtrl.dismiss();
     }
   }
 
-  private getEstados() {
+  /**
+   * Metodo para retornar um observable para a lista de estados
+   */
+  private getEstados(): Observable<any> {
     return this.httpClient.getEstados();
   }
 
-  private createForm() {
+  /**
+   * Metodo para criaçào de formulario
+   */
+  private createForm(): void {
     this.filterForm = this.fb.group({
       min_sell_value: [null],
       max_sell_value: [null],
@@ -61,14 +87,33 @@ export class FilterPage implements OnInit {
     });
   }
 
-  private getFiltroMemory() {
+  /**
+   * metodo para retornar o filtro da memoria
+   */
+  private getFiltroMemory(): void {
     this.storage.get('filtro').then((value: Filtro) => {
       this.filterForm.patchValue(value);
     })
   }
 
-  clear() {
+  /**
+   * Metodo para limpar o filtro do formulario
+   */
+  clear(): void {
     this.filterForm.reset();
     this.filtrar(false);
+  }
+
+  /**
+   * Metodo para atualizar o filtro
+   * @param formValue
+   */
+  atualizarFiltro(formValue: any) {
+    const filtro = JSON.parse(JSON.stringify(formValue));
+    filtro.min_sell_value = MaskConverter.numberValue(formValue.min_sell_value);
+    filtro.max_sell_value = MaskConverter.numberValue(formValue.max_sell_value);
+    filtro.min_rent_value = MaskConverter.numberValue(formValue.min_rent_value);
+    filtro.max_rent_value = MaskConverter.numberValue(formValue.max_rent_value);
+    this.httpClient.atualizarFiltro(filtro);
   }
 }

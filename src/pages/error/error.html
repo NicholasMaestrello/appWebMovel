@@ -8,9 +8,12 @@
 
 <ion-content padding>
   <h1 class="ion-text-center">Erro ao Executar Ação</h1>
-  <ion-item *ngFor="let err of erros">
-    <b>* {{err}}</b>
-  </ion-item>
+
+  <ul>
+    <li *ngFor="let err of erros">
+      <b>{{err}}</b>
+    </li>
+  </ul>
 
   <ion-row>
     <ion-col>

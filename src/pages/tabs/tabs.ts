@@ -4,12 +4,8 @@ import { MapaPage } from '../mapa/mapa';
 import { ResidenciaListPage } from '../residencia-list/residencia-list';
 
 /**
- * Generated class for the TabsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
+ * Componente de tabs que so serve para controlar e alternar entre o mapa e a lista
  */
-
 @Component({
   selector: 'page-tabs',
   templateUrl: 'tabs.html',

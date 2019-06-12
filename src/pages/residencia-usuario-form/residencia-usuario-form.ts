@@ -6,7 +6,11 @@ import {Observable} from "rxjs";
 import {ErrorPage} from "../error/error";
 import {ImovelDTO, ResidenciaUsuarioDTO} from "../../model/residencias";
 import {Storage} from "@ionic/storage";
+import {MaskConverter} from "../../shared/helper/mask-converter";
 
+/**
+ * Componente de cadastro e manutençao dos imoveis do usuario
+ */
 @Component({
   selector: 'page-residencia-usuario-form',
   templateUrl: 'residencia-usuario-form.html',
@@ -18,6 +22,17 @@ export class ResidenciaUsuarioFormPage implements OnInit {
   user = '';
   loader: Loading;
 
+  /**
+   * Construtor padrão com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param httpClient
+   * @param fb
+   * @param viewCtrl
+   * @param storage
+   * @param modalCtrl
+   * @param loadingCtrl
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public httpClient: HttpClientProvider,
@@ -28,6 +43,9 @@ export class ResidenciaUsuarioFormPage implements OnInit {
               private loadingCtrl: LoadingController) {
   }
 
+  /**
+   * Metodo inicial chamado quando o componente é chamado
+   */
   ngOnInit(): void {
     const idImovel = this.navParams.data.item;
     this.estados$ = this.getEstados();
@@ -41,7 +59,11 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
   }
 
-  getResidenciaDetalhe(idResidencia: number) {
+  /**
+   * Metodo para buscar os detalhes da residencia
+   * @param idResidencia
+   */
+  getResidenciaDetalhe(idResidencia: number): void {
     this.createLoadingBar();
     this.loader.present();
     this.httpClient.getImoveisUsuarioDetalhe(idResidencia).subscribe(
@@ -50,7 +72,10 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     );
   }
 
-  createForm() {
+  /**
+   * Metodo para criação do formulario
+   */
+  createForm(): void {
     this.residenciaForm = this.fb.group({
       id: [null],
       username: [null],
@@ -78,15 +103,21 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     });
   }
 
-  private getEstados() {
+  /**
+   * Metodo para retornar o observable dos estados
+   */
+  private getEstados(): Observable<any> {
     return this.httpClient.getEstados();
   }
 
-  createFormSubscribe() {
+  /**
+   * Metodo para criar o subscriber dos valores do formulario
+   */
+  createFormSubscribe(): void {
     this.zipcode.valueChanges.subscribe(
       r => {
         if (r && r.length == 9) {
-          this.httpClient.getCep(this.justDigitsValue(r)).subscribe(
+          this.httpClient.getCep(MaskConverter.justDigitsValue(r)).subscribe(
             res => this.cepResponse(res)
           )
         }
@@ -109,13 +140,20 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     )
   }
 
-  cepResponse(cep: any) {
+  /**
+   * Metodo para extrair os endereços do resultado da pesquisa por cep
+   * @param cep
+   */
+  cepResponse(cep: any): void {
     this.residenciaForm.get('address').get('state').setValue(cep.uf);
     this.residenciaForm.get('address').get('city').setValue(cep.localidade);
     this.residenciaForm.get('address').get('neighborhood').setValue(cep.bairro);
     this.residenciaForm.get('address').get('street_name').setValue(cep.logradouro);
   }
 
+  /**
+   * Metodo para criar o dto dos imoveis
+   */
   createResidenciaDTO(): ImovelDTO {
     const formValue = this.residenciaForm.value;
     const imovel: ImovelDTO = {
@@ -137,7 +175,7 @@ export class ResidenciaUsuarioFormPage implements OnInit {
           street_number: formValue.address.street_number,
           apartment: formValue.address.apartment,
           neighborhood: formValue.address.neighborhood,
-          zipcode: this.justDigitsValue(formValue.address.zipcode)
+          zipcode: MaskConverter.justDigitsValue(formValue.address.zipcode)
         }
       }
     };
@@ -149,16 +187,19 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
     if (formValue.for_sale) {
       imovel.property.for_sale = formValue.for_sale;
-      imovel.property.sell_price = this.numberValue(formValue.sell_price);
+      imovel.property.sell_price = MaskConverter.numberValue(formValue.sell_price);
     }
     if (formValue.for_rent) {
       imovel.property.for_rent = formValue.for_rent;
-      imovel.property.rent_price = this.numberValue(formValue.rent_price);
+      imovel.property.rent_price = MaskConverter.numberValue(formValue.rent_price);
     }
     return imovel;
   }
 
-  salvar() {
+  /**
+   * Metodo tratar o envento de salvar
+   */
+  salvar(): void {
     this.createLoadingBar();
     this.loader.present();
     if (this.newResidencia) {
@@ -168,7 +209,10 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
   }
 
-  cadastrar() {
+  /**
+   * Metodo para cadastrar um novo imovel
+   */
+  cadastrar(): void {
     const imovel = this.createResidenciaDTO();
     this.httpClient.postImoveisUsuario(imovel).subscribe(
       res => {
@@ -179,7 +223,10 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     )
   }
 
-  alterar() {
+  /**
+   * metodo para alterar um imovel
+   */
+  alterar(): void {
     const imovel = this.createResidenciaDTO();
     this.httpClient.putImoveisUsuario(imovel.property.id, imovel).subscribe(
       res => {
@@ -190,7 +237,11 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     )
   }
 
-  preencherFormulario(imovel: ResidenciaUsuarioDTO) {
+  /**
+   * Metodo para preencher o formulario com um imovel
+   * @param imovel
+   */
+  preencherFormulario(imovel: ResidenciaUsuarioDTO): void {
     if (imovel.rent_price == '0.0') {
       imovel.rent_price = null;
       // @ts-ignore
@@ -207,7 +258,11 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     this.loader.dismiss();
   }
 
-  resolveLatLong(googleGeocoding: any) {
+  /**
+   * Metodo para extrar a latitude e a longitude da chamada da api da google de geocoding
+   * @param googleGeocoding
+   */
+  resolveLatLong(googleGeocoding: any): void {
     try {
       let lat = googleGeocoding.results[0].geometry.location.lat;
       let lng = googleGeocoding.results[0].geometry.location.lng
@@ -220,7 +275,10 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     }
   }
 
-  getUser() {
+  /**
+   * Metodo para pegar o nome do usuario logado
+   */
+  getUser(): void {
     this.storage.get('userName').then(value => {
       this.user = value;
     })
@@ -243,25 +301,22 @@ export class ResidenciaUsuarioFormPage implements OnInit {
     return this.residenciaForm.get('longitude');
   }
 
-  showError(err) {
+  /**
+   * Metodo para mostrar erros na modal
+   * @param err
+   */
+  showError(err): void {
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
   }
 
-  createLoadingBar() {
+  /**
+   * Metodo para mostrar barra de carrendo
+   */
+  createLoadingBar(): void {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
-  }
-
-  justDigitsValue(value: string = ''): string {
-    if (!value) return '';
-    return value.replace(/[^0-9]/g, '');
-  }
-
-  numberValue(value: string = ''): number {
-    if (!value) return 0;
-    return Number(value.replace(/\./g, '').replace(/\,/, '.'));
   }
 }

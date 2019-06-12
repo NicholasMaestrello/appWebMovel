@@ -6,7 +6,11 @@ import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '
 import {User, UserDTO} from "../../model/user";
 import {ErrorPage} from "../error/error";
 import {Storage} from "@ionic/storage";
+import {MaskConverter} from "../../shared/helper/mask-converter";
 
+/**
+ * Componente de cadastro e edição do usuario
+ */
 @Component({
   selector: 'page-cadastro-usuario',
   templateUrl: 'cadastro-usuario.html',
@@ -17,6 +21,17 @@ export class CadastroUsuarioPage implements OnInit {
   novoUsuario = false;
   loader: Loading;
 
+  /**
+   * Construtor com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param httpClient
+   * @param fb
+   * @param viewCtrl
+   * @param storage
+   * @param modalCtrl
+   * @param loadingCtrl
+   */
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -28,6 +43,10 @@ export class CadastroUsuarioPage implements OnInit {
     private loadingCtrl: LoadingController) {
   }
 
+  /**
+   * Primeiro metodo a ser executado apos a criação do componente, verificando se é uma edição ou criação de usuario
+   * e chamando os primeiros metodos
+   */
   ngOnInit(): void {
     const novoUsuario = this.navParams.data.item;
 
@@ -37,11 +56,17 @@ export class CadastroUsuarioPage implements OnInit {
     this.checkMode(novoUsuario);
   }
 
-  public getEstados() {
+  /**
+   * metodo que retorna um observable para a lista de estados
+   */
+  public getEstados(): Observable<any> {
     return this.httpClient.getEstados();
   }
 
-  createForm() {
+  /**
+   * Metodo para criação do formulario
+   */
+  createForm(): void {
     this.usuarioForm = this.fb.group({
       name: [null, [Validators.required]],
       username: [null, [Validators.required]],
@@ -60,11 +85,14 @@ export class CadastroUsuarioPage implements OnInit {
     });
   }
 
-  createFormSubscribe() {
+  /**
+   * Metodo que cria um subscribe para a troca de valores do formulario
+   */
+  createFormSubscribe(): void {
     this.cep.valueChanges.subscribe(
       r => {
         if (r && r.length == 9) {
-          this.httpClient.getCep(this.justDigitsValue(r)).subscribe(
+          this.httpClient.getCep(MaskConverter.justDigitsValue(r)).subscribe(
             res => this.cepResponse(res)
           )
         }
@@ -72,6 +100,9 @@ export class CadastroUsuarioPage implements OnInit {
     )
   }
 
+  /**
+   * Metodo que retorna um validator para checar se o valor das senhas digitados é igual
+   */
   confirmarSenhaIgual(): ValidatorFn {
     return (control: FormGroup): { [key: string]: any } => {
       const senha = control.get('password').value;
@@ -82,14 +113,22 @@ export class CadastroUsuarioPage implements OnInit {
     };
   }
 
-  cepResponse(cep: any) {
+  /**
+   * Metodo que seta os valores apos o retorno da chamada de endereço por cep
+   * @param cep
+   */
+  cepResponse(cep: any): void {
     this.estado.setValue(cep.uf);
     this.cidade.setValue(cep.localidade);
     this.bairro.setValue(cep.bairro);
     this.rua.setValue(cep.logradouro);
   }
 
-  checkMode(novoUsuario) {
+  /**
+   * Metodo que checa se o componente esta em modo de edição
+   * @param novoUsuario
+   */
+  checkMode(novoUsuario): void {
     if (!!novoUsuario) {
       this.novoUsuario = true;
       this.usuarioForm.addControl('senhaGroup', this.fb.group({
@@ -103,7 +142,10 @@ export class CadastroUsuarioPage implements OnInit {
     }
   }
 
-  private getUser() {
+  /**
+   * metodo que recupera os detalhes do usuario atual
+   */
+  private getUser(): void {
     this.createLoadingBar();
     this.loader.present();
     this.storage.get('userName').then((val: string) => {
@@ -114,7 +156,11 @@ export class CadastroUsuarioPage implements OnInit {
     });
   }
 
-  populateUserForm(user: User) {
+  /**
+   * Metodo para popular o formulario com os dados do uaurio
+   * @param user
+   */
+  populateUserForm(user: User): void {
     this.usuarioForm.patchValue(
       {
         name: user.name,
@@ -136,13 +182,16 @@ export class CadastroUsuarioPage implements OnInit {
     this.loader.dismiss();
   }
 
+  /**
+   * Metodo que retorna o dto de usuario a partir do formulario
+   */
   createUserDTO(): UserDTO {
     const formValue = this.usuarioForm.value;
     const user: User = {
       name: formValue.name,
       username: formValue.username,
       email: formValue.email,
-      document: this.justDigitsValue(formValue.document),
+      document: MaskConverter.justDigitsValue(formValue.document),
       birthdate: formValue.birthdate,
       zipcode: formValue.zipcode,
       state: formValue.state,
@@ -151,8 +200,8 @@ export class CadastroUsuarioPage implements OnInit {
       street_name: formValue.street_name,
       street_number: formValue.street_number,
       apartment: formValue.apartment,
-      telephone: this.justDigitsValue(formValue.telephone),
-      cell_phone: this.justDigitsValue(formValue.cell_phone)
+      telephone: MaskConverter.justDigitsValue(formValue.telephone),
+      cell_phone: MaskConverter.justDigitsValue(formValue.cell_phone)
     }
 
     if (this.novoUsuario) {
@@ -167,7 +216,10 @@ export class CadastroUsuarioPage implements OnInit {
     return userDTO;
   }
 
-  salvar() {
+  /**
+   * metodo de salvar
+   */
+  salvar(): void {
     this.createLoadingBar();
     this.loader.present();
     if (this.novoUsuario) {
@@ -177,6 +229,9 @@ export class CadastroUsuarioPage implements OnInit {
     }
   }
 
+  /**
+   * metodo para cadastrar o usuario
+   */
   cadastrar() {
     const user = this.createUserDTO();
     this.httpClient.postUser(user).subscribe(
@@ -187,6 +242,9 @@ export class CadastroUsuarioPage implements OnInit {
     )
   }
 
+  /**
+   * metodo para alterar o usuario
+   */
   alterar() {
     const user = this.createUserDTO();
     this.httpClient.patchUser(user.user.username, user).subscribe(
@@ -218,20 +276,22 @@ export class CadastroUsuarioPage implements OnInit {
     return this.usuarioForm.get('street_name');
   }
 
-  createLoadingBar() {
+  /**
+   * metodo para mostrar a barra de loading
+   */
+  createLoadingBar(): void {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
   }
 
-  showError(err) {
+  /**
+   * metodo para mostar modal de erros
+   * @param err
+   */
+  showError(err): void {
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
-  }
-
-  justDigitsValue(value: string = ''): string {
-    if(!value) return '';
-    return value.replace(/[^0-9]/g, '');
   }
 }

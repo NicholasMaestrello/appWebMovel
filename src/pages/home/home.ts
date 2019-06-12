@@ -8,6 +8,9 @@ import {ResidenciaUsuarioListPage} from '../residencia-usuario-list/residencia-u
 import {AboutPage} from '../about/about';
 import {CadastroUsuarioPage} from "../cadastro-usuario/cadastro-usuario";
 
+/**
+ * Componente home
+ */
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -19,6 +22,12 @@ export class HomePage {
 
   pages: Array<{ title: string, component: any }>;
 
+  /**
+   * Construtor padrão com serviços injetados
+   * @param platform
+   * @param statusBar
+   * @param splashScreen
+   */
   constructor(public platform: Platform,
               public statusBar: StatusBar,
               public splashScreen: SplashScreen) {
@@ -31,12 +40,17 @@ export class HomePage {
     ];
   }
 
+  /**
+   * Metodo para atualizar root da aplicação
+   * @param page
+   */
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   }
 
+  /**
+   * Metodo para realizar logout
+   */
   logout() {
     this.nav.setRoot(LoginPage);
   }

@@ -1,6 +1,9 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, ViewController} from 'ionic-angular';
 
+/**
+ * Componente de exibição de erros
+ */
 @Component({
   selector: 'page-error',
   templateUrl: 'error.html',
@@ -8,6 +11,12 @@ import {NavController, NavParams, ViewController} from 'ionic-angular';
 export class ErrorPage {
   erros: any[];
 
+  /**
+   * Construtor padrão com serviços
+   * @param navCtrl
+   * @param navParams
+   * @param viewCtrl
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public viewCtrl: ViewController) {
@@ -21,6 +30,9 @@ export class ErrorPage {
     }
   }
 
+  /**
+   * metodo para fechar pagina
+   */
   dismiss() {
     this.viewCtrl.dismiss();
   }

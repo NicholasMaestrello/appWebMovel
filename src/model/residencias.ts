@@ -1,9 +1,15 @@
 import {User} from "./user";
 
+/**
+ * Classe de imovel utilizada nos POST e PUT de imoveis de um usuario
+ */
 export class ImovelDTO {
   property: ResidenciaUsuarioDTO;
 }
 
+/**
+ * Classe contendo as informações que o usuario vai fornecer da residencia para a casa
+ */
 export class ResidenciaUsuarioDTO {
   id?: number;
   kind?: string;
@@ -22,6 +28,9 @@ export class ResidenciaUsuarioDTO {
   images?: any[];
 }
 
+/**
+ * Classe contendo as informações vindas do servidor em resposta a procura de imoveis
+ */
 export class ResidenciaDTO {
   id: number;
   kind: string;
@@ -40,6 +49,9 @@ export class ResidenciaDTO {
   images?: any[];
 }
 
+/**
+ * classe com informações de endereço
+ */
 export class AddressDTO {
   id?: number;
   city: string;

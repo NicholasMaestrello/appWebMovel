@@ -4,6 +4,9 @@ import {ImagePicker, ImagePickerOptions} from "@ionic-native/image-picker";
 import {ErrorPage} from "../error/error";
 import {HttpClientProvider} from "../../providers/http-client/http-client";
 
+/**
+ * Componente de photos do imovel para cadastro e edição
+ */
 @Component({
   selector: 'page-residencia-usuario-photo',
   templateUrl: 'residencia-usuario-photo.html',
@@ -13,6 +16,15 @@ export class ResidenciaUsuarioPhotoPage implements OnInit {
   loader: Loading;
   idImovel = null;
 
+  /**
+   * Construtor padrào com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param imagePicker
+   * @param httpClient
+   * @param modalCtrl
+   * @param loadingCtrl
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private imagePicker: ImagePicker,
@@ -21,12 +33,19 @@ export class ResidenciaUsuarioPhotoPage implements OnInit {
               private loadingCtrl: LoadingController) {
   }
 
+  /**
+   * Primeiro metodo invocado quando o componente é criado
+   */
   ngOnInit(): void {
     this.idImovel = this.navParams.data.item;
     this.getResidenciaDetalhe(this.idImovel);
   }
 
-  getResidenciaDetalhe(idResidencia: number) {
+  /**
+   * Metodo para chamar a api de detalhamento da residencia, dentro da qual existem as imagens
+   * @param idResidencia
+   */
+  getResidenciaDetalhe(idResidencia: number): void {
     this.createLoadingBar();
     this.loader.present();
     this.httpClient.getImoveisUsuarioDetalhe(idResidencia).subscribe(
@@ -38,6 +57,9 @@ export class ResidenciaUsuarioPhotoPage implements OnInit {
     );
   }
 
+  /**
+   * Metodo para mostar o image picker para o usuario selecionar a foto que deseja salvar
+   */
   showImagePicker() {
     const options: ImagePickerOptions = {
       maximumImagesCount: 1,
@@ -58,23 +80,37 @@ export class ResidenciaUsuarioPhotoPage implements OnInit {
     });
   }
 
-  showError(err) {
+  /**
+   * Metodo para mostra os erros
+   * @param err
+   */
+  showError(err): void {
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
   }
 
-  createLoadingBar() {
+  /**
+   * Metodo para mostrar a barra de carregando
+   */
+  createLoadingBar(): void {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
   }
 
-  novo() {
+  /**
+   * Metodo para chamar a inclusão de uma nova imagem
+   */
+  novo(): void {
     this.showImagePicker();
   }
 
-  removeImage(image: string) {
+  /**
+   * MEtodo para tratar quando o deseja remover a foto
+   * @param image
+   */
+  removeImage(image: string): void {
     this.createLoadingBar();
     this.loader.present();
 
@@ -87,7 +123,11 @@ export class ResidenciaUsuarioPhotoPage implements OnInit {
     )
   }
 
-  saveImage(image: any) {
+  /**
+   * MEtodo para chamar a api para salvar a imagem
+   * @param image
+   */
+  saveImage(image: any): void {
     this.createLoadingBar();
     this.loader.present();
     this.httpClient.postImageImovel(this.idImovel, image).subscribe(

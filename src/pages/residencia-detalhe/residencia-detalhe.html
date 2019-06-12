@@ -15,10 +15,10 @@
         <b>{{residencia?.kind == 'house' ? 'Casa' : 'Apartamento'}}</b>
       </h3>
       <h3>
-        <b *ngIf="residencia?.for_sale">Preço para Compra: R${{residencia?.sell_price | currency :'BRL'}}</b>
+        <b *ngIf="residencia?.for_sale">Preço para Compra: {{residencia?.sell_price | currency :'BRL'}}</b>
       </h3>
       <h3>
-        <b *ngIf="residencia?.for_rent">Preço para Aluguel: R${{residencia?.rent_price | currency :'BRL'}}</b>
+        <b *ngIf="residencia?.for_rent">Preço para Aluguel: {{residencia?.rent_price | currency :'BRL'}}</b>
       </h3>
     </ion-card-header>
   </ion-card>

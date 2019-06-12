@@ -7,6 +7,9 @@ import {ErrorPage} from "../error/error";
 import {HttpClientProvider} from "../../providers/http-client/http-client";
 import {ResidenciaUsuarioPhotoPage} from "../residencia-usuario-photo/residencia-usuario-photo";
 
+/**
+ * Componete de listagem dos imoveis do usuario
+ */
 @Component({
   selector: 'page-residencia-usuario-list',
   templateUrl: 'residencia-usuario-list.html',
@@ -16,6 +19,16 @@ export class ResidenciaUsuarioListPage implements OnInit {
   residencias: ResidenciaUsuarioDTO[];
   loader: Loading;
 
+  /**
+   * Construtor padrão com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param storage
+   * @param httpClient
+   * @param modalCtrl
+   * @param loadingCtrl
+   * @param alertCtrl
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private storage: Storage,
@@ -25,11 +38,17 @@ export class ResidenciaUsuarioListPage implements OnInit {
               public alertCtrl: AlertController) {
   }
 
+  /**
+   * Primeiro metodo chamado apos a criação do compoentne
+   */
   ngOnInit(): void {
     this.getResidenciasUsuario();
   }
 
-  getResidenciasUsuario() {
+  /**
+   * Metodo para buscar os imoveis do usuario
+   */
+  getResidenciasUsuario(): void {
     this.createLoadingBar();
     this.loader.present();
     this.storage.get('userName').then((val: string) => {
@@ -43,34 +62,55 @@ export class ResidenciaUsuarioListPage implements OnInit {
     });
   }
 
-  editar(imovel: ResidenciaUsuarioDTO) {
+  /**
+   * Metodo para chamar a pagina de edição de imoveis
+   * @param imovel
+   */
+  editar(imovel: ResidenciaUsuarioDTO): void {
     this.navCtrl.push(ResidenciaUsuarioFormPage, {
       item: imovel.id
     });
   }
 
-  novo() {
+  /**
+   * Metodo para chamar a pagina de novo imovel
+   */
+  novo(): void {
     this.navCtrl.push(ResidenciaUsuarioFormPage);
   }
 
-  showError(err) {
+  /**
+   * Metodo para mostra erros na modal de erros
+   * @param err
+   */
+  showError(err): void {
     console.log(err);
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage);
     modal.present();
   }
 
-  createLoadingBar() {
+  /**
+   * Metodo para mostrar barra de carregando
+   */
+  createLoadingBar(): void {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
   }
 
-  refresh() {
+  /**
+   * Metodo para dar refresh na pagina
+   */
+  refresh(): void {
     this.getResidenciasUsuario();
   }
 
-  excluir(imovel: ResidenciaUsuarioDTO) {
+  /**
+   * Metodo para chamar api de exclusão de residencia
+   * @param imovel
+   */
+  excluir(imovel: ResidenciaUsuarioDTO): void {
     const prompt = this.alertCtrl.create({
       title: 'Atenção',
       message: "Você esta prestes a realizar uma ação que não podera ser desfeita. Deseja continuar ?",
@@ -97,7 +137,11 @@ export class ResidenciaUsuarioListPage implements OnInit {
     prompt.present();
   }
 
-  fotos(imovel: ResidenciaUsuarioDTO) {
+  /**
+   * MEtodo para chamar a pagina de photos do imovel
+   * @param imovel
+   */
+  fotos(imovel: ResidenciaUsuarioDTO): void {
     this.navCtrl.push(ResidenciaUsuarioPhotoPage, {
       item: imovel.id
     });

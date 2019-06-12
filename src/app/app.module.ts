@@ -45,6 +45,9 @@ import {BrMaskerModule} from "brmasker-ionic-3";
 
 registerLocaleData(localePtBr, 'pt');
 
+/**
+ * Modulo principal do sistema, aonde ocorrem todos os importes e declaração de componentes
+ */
 @NgModule({
   declarations: [
     MyApp,

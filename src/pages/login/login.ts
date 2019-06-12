@@ -17,6 +17,9 @@ import {LoginDto} from "../../model/login.dto";
 import {ErrorPage} from "../error/error";
 import {Network} from "@ionic-native/network";
 
+/**
+ * Componente de login
+ */
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -29,6 +32,18 @@ export class LoginPage implements OnInit {
   connectSubscription: any;
   isInternet = false;
 
+  /**
+   * Construtor padrão com serviços injetados
+   * @param navCtrl
+   * @param navParams
+   * @param storage
+   * @param fb
+   * @param httpClient
+   * @param modalCtrl
+   * @param loadingCtrl
+   * @param toastCtrl
+   * @param network
+   */
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private storage: Storage,
@@ -40,19 +55,28 @@ export class LoginPage implements OnInit {
               private network: Network) {
   }
 
+  /**
+   * Primeiro metodo chamado apos a criação do componente
+   */
   ngOnInit(): void {
     this.createForm();
     this.checkNetwork();
   }
 
-  createForm() {
+  /**
+   * metodo para criação do formulario
+   */
+  createForm(): void {
     this.loginForm = this.fb.group({
       email: [null, [Validators.required]],
       senha: [null, [Validators.required]]
     });
   }
 
-  logar() {
+  /**
+   * Metodo para chamar a api de login
+   */
+  logar(): void {
     this.showLoadingBar()
     const login = this.criarLoginDTO();
     this.httpClient.login(login).subscribe(
@@ -61,12 +85,18 @@ export class LoginPage implements OnInit {
     )
   }
 
-  cadastrar() {
+  /**
+   * Metodo para realizar a chamada para a pagina de cadastro
+   */
+  cadastrar(): void {
     this.navCtrl.push(CadastroUsuarioPage, {
       item: true
     });
   }
 
+  /**
+   * Metodo que cria o dto de login
+   */
   criarLoginDTO(): LoginDto {
     const login: LoginDto = {
       login: {
@@ -77,14 +107,21 @@ export class LoginPage implements OnInit {
     return login;
   }
 
-  showLoadingBar() {
+  /**
+   * metodo para mostrar barra de carregando
+   */
+  showLoadingBar(): void {
     this.loader = this.loadingCtrl.create({
       content: "Carregando..."
     });
     this.loader.present();
   }
 
-  loginSucesso(res: any) {
+  /**
+   * Metodo de resposta para quando o login é bem sucedido
+   * @param res
+   */
+  loginSucesso(res: any): void {
     this.storage.set('authToken', res.token);
     this.storage.set('userName', res.username);
     this.httpClient.atualizarToken(res.token);
@@ -92,7 +129,11 @@ export class LoginPage implements OnInit {
     this.navCtrl.setRoot(HomePage);
   }
 
-  showError(err) {
+  /**
+   * Metodo para mostrar erros
+   * @param err
+   */
+  showError(err): void {
     this.loader.dismiss();
     const modal = this.modalCtrl.create(ErrorPage, {err: err});
     modal.present();
@@ -107,6 +148,10 @@ export class LoginPage implements OnInit {
     return this.loginForm.get('senha');
   }
 
+  /**
+   * Metodo para mostrar toast
+   * @param message
+   */
   showToast(message: string) {
     this.toast = this.toastCtrl.create({
       message: message,
@@ -115,6 +160,9 @@ export class LoginPage implements OnInit {
     this.toast.present();
   }
 
+  /**
+   * Metodo para verificar se o usuario possui conexão com a internet
+   */
   checkNetwork() {
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       this.showToast('Sem conexão com a internet');
